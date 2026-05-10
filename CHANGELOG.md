@@ -11,6 +11,80 @@ SYNAPSE Documentation uses **independent versioning** separate from the main SYN
 
 ---
 
+## [v0.1.0] - 2026-05-10
+
+**🎉 First minor release: Complete Documentation Platform**
+
+This release marks the completion of the initial documentation platform with comprehensive guides, automated deployment, and quality assurance pipelines.
+
+### 🌟 Highlights
+
+- **Complete Documentation Platform** - Fully functional Docusaurus site with all core sections
+- **Java-First Plugin Architecture** - Complete transition from Python to Java for plugin development
+- **Automated Deployment** - GitHub Actions workflows for CI/CD
+- **Quality Assurance** - Automated link checking, build verification, linting
+
+### 📚 Documentation Sections
+
+- **Getting Started** - Installation, quick start, configuration guides
+- **Core Concepts** - Plugins, agents, tasks, workflows, orchestration
+- **User Guides** - Configuration, CLI usage, plugin management, team collaboration
+- **Architecture** - System design, plugin architecture, multi-agent systems
+- **Development** - Plugin development guides with Java examples
+- **Deployment** - Docker, Kubernetes, production deployment guides
+
+### 🔌 Plugin Documentation
+
+- **Java-First Architecture** - Official plugin language strategy documented
+- **Plugin Template** - Java 21 + Spring Boot 3.2 + Gradle 8.5 template repository
+- **Development Guides** - Complete getting started, testing, packaging workflows
+- **Repository Structure** - Official, community, and template repository ecosystem
+
+### 🚀 Infrastructure
+
+- **GitHub Actions Deployment** - Automated deployment to GitHub Pages
+- **CI Pipeline** - Build verification, link checking, format validation
+- **Pull Request Validation** - Automated quality checks on all PRs
+- **GitHub Pages** - Live documentation at https://ftmahringer.github.io/Synapse/
+
+### 🛠️ Developer Experience
+
+- **Edit Links** - Correct repository linking for contribution
+- **Navigation** - Clean sidebar with logical categorization
+- **Search** - Full-text search across all documentation
+- **Mobile Responsive** - Optimized for all device sizes
+- **Dark Mode** - Full dark mode support
+
+### 📦 What's Included
+
+All development versions from v0.0.1-dev through v0.0.7-dev are consolidated into this release:
+
+- v0.0.1-dev: Docusaurus Setup & Structure
+- v0.0.2-dev: Documentation Enhancement & Diagrams
+- v0.0.3-dev: Installation & Deployment Guides
+- v0.0.4-dev: Plugin Documentation (initial)
+- v0.0.5-dev: Navigation Cleanup & Organization
+- v0.0.6-dev: Java-First Plugin Architecture Update
+- v0.0.7-dev: GitHub Actions CI/CD Workflows
+
+### 🔗 Links
+
+- **Live Documentation**: https://ftmahringer.github.io/Synapse/
+- **Source Repository**: https://github.com/FTMahringer/Synapse-docs
+- **Main Project**: https://github.com/FTMahringer/Synapse
+- **Plugin Template**: https://github.com/FTMahringer/Synapse-Plugin-Template
+
+### 🎯 Next Steps
+
+Future documentation releases will focus on:
+- API documentation (OpenAPI/Swagger integration)
+- Advanced developer guides
+- Video tutorials and examples
+- Interactive demos
+- Community contribution guides
+
+---
+
 ## [v0.0.7-dev] - 2026-05-10
 
 **Development version: GitHub Actions CI/CD workflows.**
