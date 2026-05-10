@@ -34,10 +34,8 @@ const sidebars: SidebarsConfig = {
       type: 'category',
       label: 'User Guides',
       items: [
-        'guides/agent-management',
         'guides/team-collaboration',
         'guides/plugin-development',
-        'guides/memory-configuration',
       ],
     },
   ],
@@ -167,6 +165,7 @@ const sidebars: SidebarsConfig = {
         'development/contributing',
         'development/environment-setup',
         'development/architecture-deep-dive',
+        'development/package-structure',
         'development/database-schema',
         'development/testing',
         'development/release-process',

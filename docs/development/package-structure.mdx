@@ -1,0 +1,218 @@
+---
+sidebar_position: 3
+---
+
+# Package Architecture
+
+SYNAPSE v2.1.0 introduced a clean, domain-driven package architecture that replaced the previous monolithic core structure.
+
+## Directory Overview
+
+```
+dev/synapse/
+├── core/
+│   ├── SynapseApplication.java      # Main application entry point
+│   ├── bootstrap/                   # Startup, health, migrations
+│   ├── infrastructure/              # Cross-cutting concerns
+│   ├── common/                      # Shared domain & repositories
+│   └── dto/                         # Request/Response objects
+│
+├── agents/                          # Agent orchestration & teams
+├── conversation/                    # Conversation lifecycle & messaging
+├── tasks/                           # Task & project management
+├── users/                           # User management & authentication
+├── providers/                       # Model provider integrations
+└── plugins/                         # Plugin lifecycle & store
+```
+
+---
+
+## Module Responsibilities
+
+### `core/bootstrap`
+
+Application bootstrapping and health monitoring:
+
+- `SynapseApplication.java` — Spring Boot entry point
+- `HealthController.java` — `/api/health` endpoint
+- `DatabaseMigrationRunner.java` — Flyway migration execution
+
+### `core/infrastructure`
+
+Cross-cutting technical concerns (independent of business logic):
+
+| Sub-package | Purpose |
+|-------------|---------|
+| `security/` | JWT, authentication, encryption |
+| `logging/` | Structured logging, system logs |
+| `event/` | Event publishing (Redis / in-memory) |
+| `exception/` | Global exception handling |
+| `config/` | Spring Boot configuration |
+| `metrics/` | Prometheus metrics (v2.1.1+) |
+
+### `core/common`
+
+Shared domain entities and repository interfaces. All feature modules depend on this layer:
+
+- `domain/` — JPA entities (`Agent`, `Conversation`, `Task`, …)
+- `repository/` — Spring Data JPA repositories
+
+### `core/dto`
+
+Request and response data transfer objects — clean separation from domain entities.
+
+### `agents/`
+
+Agent orchestration, teams, and AI-firm system:
+
+- `AgentController.java` — Agent management API
+- `AgentService.java` — Agent lifecycle
+- `AgentTeamService.java` — Team coordination
+- `AgentDispatchService.java` — AI-firm routing
+
+### `conversation/`
+
+Conversation lifecycle and real-time messaging:
+
+- `ConversationController.java` — Conversation API
+- `ConversationService.java` — Conversation management
+- `MessageService.java` — Message handling
+- `realtime/` — WebSocket & SSE for live updates
+
+### `tasks/`
+
+Task and project management:
+- `TaskController.java` — Task API
+- `TaskService.java` — Task lifecycle
+
+### `users/`
+
+User management and authentication:
+- `UserController.java` — User API
+- `UserService.java` — User management
+
+### `providers/`
+
+Model provider integrations:
+
+| Sub-package | Provider |
+|-------------|---------|
+| `anthropic/` | Claude (Anthropic) |
+| `openai/` | GPT (OpenAI) |
+| `ollama/` | Local models via Ollama |
+
+### `plugins/`
+
+Plugin system and marketplace:
+- `PluginController.java` — Plugin API
+- `PluginService.java` — Plugin lifecycle
+- `StoreController.java` — Marketplace API
+- `BundleInstallService.java` — Plugin bundle installation
+
+---
+
+## Component Scanning
+
+Spring Boot scans all modules at startup:
+
+```java
+@SpringBootApplication(scanBasePackages = {
+    "dev.synapse.core",
+    "dev.synapse.agents",
+    "dev.synapse.conversation",
+    "dev.synapse.tasks",
+    "dev.synapse.users",
+    "dev.synapse.providers",
+    "dev.synapse.plugins"
+})
+public class SynapseApplication { }
+```
+
+---
+
+## Design Principles
+
+### 1. Single Responsibility
+
+Each module has one clear purpose. `agents/` handles agent orchestration; `conversation/` handles messaging; `tasks/` handles task management.
+
+### 2. Dependency Direction
+
+Dependencies flow inward to `core/common`:
+
+```
+agents       → common/domain
+conversation → common/repository
+providers    → common/domain
+```
+
+### 3. Clean Boundaries
+
+No direct cross-module imports — everything goes through `common`:
+
+```
+❌ agents → conversation   (direct cross-module import)
+✅ agents → common ← conversation   (via shared layer)
+```
+
+### 4. Infrastructure Separation
+
+Security, logging, and events live in `core/infrastructure`. They can be replaced without touching any feature module.
+
+---
+
+## Migration from v1.x
+
+If you have custom code that imports from v1.x packages, update your imports.
+
+### Old Imports (v1.x)
+
+```java
+import dev.synapse.core.agents.*;
+import dev.synapse.core.conversation.*;
+import dev.synapse.core.plugin.*;
+import dev.synapse.core.provider.*;
+```
+
+### New Imports (v2.1+)
+
+```java
+import dev.synapse.agents.*;
+import dev.synapse.conversation.*;
+import dev.synapse.plugins.*;
+import dev.synapse.providers.*;
+```
+
+### Domain Entity Imports
+
+```java
+// Old
+import dev.synapse.core.domain.Agent;
+import dev.synapse.core.repository.AgentRepository;
+
+// New
+import dev.synapse.core.common.domain.Agent;
+import dev.synapse.core.common.repository.AgentRepository;
+```
+
+---
+
+## Future Evolution
+
+### v2.6.0 — Enhanced Plugin Architecture
+
+- External plugin runtimes (containerized execution)
+- Language-agnostic plugin SDK
+- Plugin sandboxing
+
+### v3.0.0 — Optional Microservices Extraction
+
+Modules are designed to be extracted as independent services:
+
+```
+synapse-agents-service       (gRPC + REST)
+synapse-conversation-service (WebSocket + REST)
+synapse-providers-service    (REST)
+```
+
+Internal communication: gRPC for service-to-service, Redis Streams for events, REST for public APIs.
