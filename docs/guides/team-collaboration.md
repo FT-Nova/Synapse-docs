@@ -471,4 +471,4 @@ firm:
     - "devops-team"
 ```
 
-See [AI-Firm System Documentation](./ai-firm-system.md) (coming soon) for details.
+See AI-Firm System Documentation (coming soon) for details.
