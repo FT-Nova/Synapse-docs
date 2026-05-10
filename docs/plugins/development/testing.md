@@ -242,8 +242,3 @@ def test_xss_prevention(plugin):
     result = plugin.format_output(malicious_input)
     assert "<script>" not in result
 ```
-
-## See Also
-
-- [Plugin Development Guide](/docs/plugins/development/getting-started)
-- [Publishing Guide](/docs/plugins/development/publishing)

@@ -529,11 +529,3 @@ class PluginResult:
     def error(cls, message: str, error_code: str) -> PluginResult:
         """Create error result."""
 ```
-
-## Next Steps
-
-- [Plugin System Concepts](../concepts/plugins.md)
-- [API Reference](../api/plugin-api.md) (coming soon)
-- [Example Plugins](https://github.com/FTMahringer/Synapse/tree/main/plugins) (coming soon)
-- [Plugin Marketplace](../guides/plugin-marketplace.md) (coming soon)
-

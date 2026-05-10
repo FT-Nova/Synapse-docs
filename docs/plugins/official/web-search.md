@@ -165,8 +165,3 @@ If experiencing rate limits:
 - Enable result caching
 - Reduce `num_results`
 - Use CDN-backed providers
-
-## See Also
-
-- [Plugin Overview](/docs/plugins/overview)
-- [API Client Plugin](/docs/plugins/official/api-client)

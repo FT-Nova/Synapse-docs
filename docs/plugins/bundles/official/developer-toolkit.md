@@ -170,8 +170,3 @@ bundles:
 ## License
 
 MIT
-
-## See Also
-
-- [Plugin Bundles](/docs/plugins/bundles/official/overview)
-- [Plugin Development](/docs/plugins/development/getting-started)

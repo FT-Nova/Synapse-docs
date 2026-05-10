@@ -472,11 +472,3 @@ firm:
 ```
 
 See [AI-Firm System Documentation](./ai-firm-system.md) (coming soon) for details.
-
-## Next Steps
-
-- [Agent Concepts](../concepts/agents.md)
-- [Agent Management](./agent-management.md)
-- [Conversation System](../concepts/conversations.md)
-- [Plugin Development](./plugin-development.md)
-

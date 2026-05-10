@@ -106,13 +106,6 @@ Agent: [uses greet tool with name="Bob"]
         Hello, Bob! Welcome to SYNAPSE!
 ```
 
-## Next Steps
-
-- [Plugin Tutorial](/docs/plugins/development/plugin-tutorial) - Complete walkthrough
-- [Bundle Tutorial](/docs/plugins/development/bundle-tutorial) - Create plugin bundles
-- [Testing Guide](/docs/plugins/development/testing) - Comprehensive testing
-- [Publishing Guide](/docs/plugins/development/publishing) - Share your plugin
-
 ## Plugin Examples
 
 Browse example plugins:
@@ -146,9 +139,3 @@ synapse dev --watch-plugins ./my-plugin
 ```
 
 Changes are automatically reloaded without restarting SYNAPSE.
-
-## Resources
-
-- [Plugin Architecture](/docs/plugins/architecture)
-- [API Reference](/docs/api/overview)
-- [Security Best Practices](/docs/administration/security)

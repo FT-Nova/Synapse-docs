@@ -374,9 +374,3 @@ Metrics available:
 - Active users
 - Tool usage frequency
 - Error rates
-
-## See Also
-
-- [Plugin Development Guide](/docs/plugins/development/getting-started)
-- [Plugin Testing](/docs/plugins/development/testing)
-- [Community Guidelines](/docs/plugins/community/contributing)

@@ -30,13 +30,6 @@ class WeatherPlugin:
 For complete plugin documentation, development guides, and the plugin catalog, see the **[Plugins](/docs/plugins/overview)** section.
 :::
 
-## See Also
-
-- [Plugin Architecture](/docs/plugins/architecture) - Technical details
-- [Create a Plugin](/docs/plugins/development/getting-started) - Development guide
-- [Official Plugins](/docs/plugins/official/overview) - Built-in plugins
-- [Plugin Bundles](/docs/plugins/bundles/official/overview) - Plugin collections
-
 
 ## Custom Plugin Development
 
@@ -140,9 +133,3 @@ POST /api/plugins/install
 3. **Documentation**: Clear action descriptions
 4. **Testing**: Comprehensive test coverage
 5. **Versioning**: Semantic versioning
-
-## Next Steps
-
-- [Plugin Development](../guides/plugin-development.md)
-- [Plugin Marketplace](../guides/plugin-marketplace.md) (coming soon)
-- [Plugin API Reference](../api/plugin-api.md) (coming soon)

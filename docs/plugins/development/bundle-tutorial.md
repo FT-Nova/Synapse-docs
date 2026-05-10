@@ -410,9 +410,3 @@ hooks:
     - "synapse plugin configure git-integration"
     - "echo 'Setup complete!'"
 ```
-
-## See Also
-
-- [Plugin Development Guide](/docs/plugins/development/getting-started)
-- [Plugin Tutorial](/docs/plugins/development/plugin-tutorial)
-- [Publishing Guide](/docs/plugins/development/publishing)

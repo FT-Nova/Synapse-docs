@@ -111,8 +111,3 @@ Agent: [uses http_request]
   }
 }
 ```
-
-## See Also
-
-- [Web Search Plugin](/docs/plugins/official/web-search)
-- [Plugin Overview](/docs/plugins/overview)

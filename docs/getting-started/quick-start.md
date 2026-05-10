@@ -61,9 +61,3 @@ Check backend health:
 ```bash
 curl http://localhost:8080/api/health
 ```
-
-## Next Steps
-
-- [Create your first agent](./first-agent.md)
-- [Configure environment variables](../deployment/environment-variables.md)
-- [Set up reverse proxy](../deployment/reverse-proxy.md)

@@ -196,8 +196,3 @@ Only allowed extensions can be read/written (configurable).
 - Increase max_file_size_mb
 - Process file in chunks
 - Use streaming for large files
-
-## See Also
-
-- [Code Execution Plugin](/docs/plugins/official/code-execution)
-- [Security Best Practices](/docs/administration/security)

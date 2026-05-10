@@ -738,11 +738,3 @@ openssl rand -base64 32
 1. Restart services after changing `.env`
 2. Check for typos in variable names
 3. Verify no spaces around `=` in `.env`
-
-## Next Steps
-
-- [Docker Compose Deployment](./docker-compose.md)
-- [Bare-Metal Installation](./bare-metal.md)
-- [Security Guide](../administration/security.md)
-- [Configuration Guide](../administration/configuration.md)
-

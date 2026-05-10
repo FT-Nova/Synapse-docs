@@ -467,11 +467,3 @@ awk '{print $1}' /var/log/nginx/access.log | sort | uniq -c | sort -nr
 ```
 
 ---
-
-## Next Steps
-
-- [SSL/TLS Certificates](https://letsencrypt.org/getting-started/)
-- [Security Hardening](../administration/security.md)
-- [Monitoring Setup](../administration/monitoring.md)
-- [Backup Configuration](./backup-restore.md)
-

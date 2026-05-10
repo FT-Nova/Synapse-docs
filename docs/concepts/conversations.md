@@ -88,9 +88,3 @@ GET /api/conversations/{id}/messages
 2. **Context Pruning**: Archive old conversations
 3. **Export Important Data**: Back up critical conversations
 4. **Clear Instructions**: Provide context in initial messages
-
-## Next Steps
-
-- [Memory System](./memory-system.md)
-- [Agents](./agents.md)
-- [WebSocket API](../api/websocket-api.md)

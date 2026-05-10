@@ -174,9 +174,3 @@ Plugins must declare required permissions:
 ### Sandbox Isolation
 
 Plugins run in isolated environments with resource limits and restricted access.
-
-## See Also
-
-- [Plugin Development Guide](/docs/plugins/development/getting-started)
-- [Plugin Tutorial](/docs/plugins/development/plugin-tutorial)
-- [Security Best Practices](/docs/administration/security)

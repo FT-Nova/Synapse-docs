@@ -132,9 +132,3 @@ Improve team effectiveness:
 - **Team Templates** (v2.5.0): Pre-configured team structures
 - **Inter-Team Collaboration** (v2.5.0): Multiple teams working together
 - **Team Analytics** (v2.11.0): Performance insights and recommendations
-
-## Next Steps
-
-- [Team Collaboration Guide](../guides/team-collaboration.md)
-- [Agents](./agents.md)
-- [Conversations](./conversations.md)

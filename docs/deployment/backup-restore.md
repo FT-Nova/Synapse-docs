@@ -278,10 +278,3 @@ docker-compose up -d
 ```
 
 ---
-
-## Next Steps
-
-- [Monitoring Setup](../administration/monitoring.md)
-- [Security Hardening](../administration/security.md)
-- [Troubleshooting](./troubleshooting.md)
-

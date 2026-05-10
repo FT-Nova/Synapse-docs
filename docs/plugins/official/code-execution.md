@@ -217,8 +217,3 @@ Common errors and solutions:
   }
 }
 ```
-
-## See Also
-
-- [File Operations Plugin](/docs/plugins/official/file-operations)
-- [Security Best Practices](/docs/administration/security)

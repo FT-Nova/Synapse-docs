@@ -68,39 +68,56 @@ const sidebars: SidebarsConfig = {
     {
       type: 'category',
       label: 'Official Plugins',
-      collapsed: false,
+      collapsed: true,
       items: [
-        'plugins/official/overview',
-        'plugins/official/web-search',
-        'plugins/official/file-operations',
-        'plugins/official/code-execution',
-        'plugins/official/api-client',
+        {
+          type: 'category',
+          label: 'Bundles',
+          collapsed: true,
+          items: [
+            'plugins/bundles/official/overview',
+            'plugins/bundles/official/developer-toolkit',
+          ],
+        },
+        {
+          type: 'category',
+          label: 'Plugins',
+          collapsed: true,
+          items: [
+            'plugins/official/overview',
+            'plugins/official/web-search',
+            'plugins/official/file-operations',
+            'plugins/official/code-execution',
+            'plugins/official/api-client',
+          ],
+        },
       ],
     },
     {
       type: 'category',
       label: 'Community Plugins',
-      collapsed: false,
+      collapsed: true,
       items: [
-        'plugins/community/overview',
-        'plugins/community/contributing',
-      ],
-    },
-    {
-      type: 'category',
-      label: 'Official Bundles',
-      collapsed: false,
-      items: [
-        'plugins/bundles/official/overview',
-        'plugins/bundles/official/developer-toolkit',
-      ],
-    },
-    {
-      type: 'category',
-      label: 'Community Bundles',
-      collapsed: false,
-      items: [
-        'plugins/bundles/community/overview',
+        {
+          type: 'category',
+          label: 'Bundles',
+          collapsed: true,
+          items: [
+            'plugins/bundles/community/overview',
+          ],
+        },
+        {
+          type: 'category',
+          label: 'Plugins',
+          collapsed: true,
+          items: [
+            'plugins/community/overview',
+          ],
+        },
+        {
+          type: 'doc',
+          id: 'plugins/community/contributing',
+        },
       ],
     },
     {

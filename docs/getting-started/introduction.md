@@ -43,9 +43,3 @@ SYNAPSE follows a **Docker-first, self-hosting-friendly** deployment model simil
 - **Team AI Platform**: Collaborative AI workspace for development teams
 - **Research Platform**: Experiment with multi-agent systems
 - **Production Deployments**: Scale with distributed infrastructure
-
-## Next Steps
-
-- [Quick Start](./quick-start.md) - Get SYNAPSE running in 5 minutes
-- [Installation](./installation.md) - Detailed installation guide
-- [First Agent](./first-agent.md) - Create your first AI agent

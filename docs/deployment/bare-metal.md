@@ -264,10 +264,3 @@ curl http://localhost:8080/api/health
 ```
 
 ---
-
-## Next Steps
-
-- [Docker Compose Deployment](./docker-compose.md) (Recommended)
-- [Environment Variables](./environment-variables.md)
-- [Reverse Proxy Setup](./reverse-proxy.md)
-

@@ -80,10 +80,3 @@ POST /api/agents
 3. **Temperature Tuning**: Lower for factual, higher for creative
 4. **Memory Management**: Configure appropriate context depth
 5. **Plugin Selection**: Add only necessary capabilities
-
-## Next Steps
-
-- [Conversations](./conversations.md)
-- [Memory System](./memory-system.md)
-- [Team Collaboration](../guides/team-collaboration.md)
-- [Agent Management](../guides/agent-management.md)

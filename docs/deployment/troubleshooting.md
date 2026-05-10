@@ -618,11 +618,3 @@ If you can't resolve the issue:
    - Steps to reproduce
 
 ---
-
-## Next Steps
-
-- [Docker Compose Deployment](./docker-compose.md)
-- [Backup & Restore](./backup-restore.md)
-- [Monitoring](../administration/monitoring.md)
-- [Security](../administration/security.md)
-

@@ -347,10 +347,3 @@ spec:
 ```
 
 ---
-
-## Next Steps
-
-- [Docker Compose Deployment](./docker-compose.md) (Recommended)
-- [Reverse Proxy Setup](./reverse-proxy.md)
-- [Backup & Restore](./backup-restore.md)
-

@@ -453,12 +453,3 @@ Internet
                     ├─→ Redis (single or Sentinel)
                     └─→ Qdrant (single or cluster)
 ```
-
-## Next Steps
-
-- [Environment Variables Reference](./environment-variables.md)
-- [Reverse Proxy Setup](./reverse-proxy.md)
-- [Backup & Restore](./backup-restore.md)
-- [Kubernetes Deployment](./kubernetes.md) (advanced)
-- [Administration Guide](../administration/configuration.md)
-
