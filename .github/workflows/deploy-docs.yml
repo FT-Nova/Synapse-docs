@@ -37,7 +37,7 @@ jobs:
       - name: Build documentation
         run: npm run build
         env:
-          BASE_URL: /Synapse/
+          BASE_URL: /Synapse-docs/
       
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
