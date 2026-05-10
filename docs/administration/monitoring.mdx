@@ -249,6 +249,17 @@ Example log fields:
 }
 ```
 
+### Trace Correlation Pattern
+
+Use this pattern to trace one request end-to-end:
+
+1. Capture `X-Correlation-ID` from the API response.
+2. Find matching application logs by `correlationId`.
+3. Pivot to distributed tracing with `traceId`/`spanId`.
+4. Inspect Redis event entries for the same trace/correlation fields.
+
+This gives a single chain from API request → service logs → event stream.
+
 ---
 
 ## Probe Endpoints
@@ -260,7 +271,83 @@ For runtime orchestration checks:
 
 Actuator probe groups are also enabled under `/actuator/health`.
 
+Readiness checks include:
+- database
+- redis
+- qdrant (configurable)
+- model providers
+
 ---
+
+## Grafana Dashboard Examples
+
+### Panel 1: Request Rate
+
+```json
+{
+  "title": "HTTP Request Rate",
+  "type": "timeseries",
+  "targets": [
+    {
+      "expr": "rate(http_server_requests_seconds_count{uri!=\"/actuator/prometheus\"}[5m])",
+      "legendFormat": "{{method}} {{uri}}"
+    }
+  ]
+}
+```
+
+### Panel 2: Error Rate (5xx)
+
+```json
+{
+  "title": "HTTP 5xx Error Rate",
+  "type": "timeseries",
+  "targets": [
+    {
+      "expr": "rate(http_server_requests_seconds_count{status=~\"5..\"}[5m])",
+      "legendFormat": "5xx"
+    }
+  ]
+}
+```
+
+### Panel 3: P95 Latency
+
+```json
+{
+  "title": "P95 Request Latency",
+  "type": "timeseries",
+  "targets": [
+    {
+      "expr": "histogram_quantile(0.95, rate(http_server_requests_seconds_bucket[5m]))",
+      "legendFormat": "p95"
+    }
+  ]
+}
+```
+
+### Panel 4: JVM Memory
+
+```json
+{
+  "title": "JVM Memory Used",
+  "type": "timeseries",
+  "targets": [
+    {
+      "expr": "jvm_memory_used_bytes{application=\"synapse-core\"}",
+      "legendFormat": "{{area}} {{id}}"
+    }
+  ]
+}
+```
+
+---
+
+## Operations Guide
+
+For on-call and day-2 operations workflows (triage, dashboards, probe interpretation), see:
+
+- [Operations Runbook](./operations.mdx)
 
 ## Roadmap Status
 

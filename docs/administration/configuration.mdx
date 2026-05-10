@@ -1,5 +1,77 @@
 # Configuration
 
-System configuration guide.
+Configuration guide for production-grade runtime and observability settings.
 
-(Documentation in progress - will be completed in v2.0.3-dev)
+## Core Runtime Configuration
+
+Key backend settings from `application.yml`:
+
+```yaml
+server:
+  port: ${SERVER_PORT:8080}
+
+spring:
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/synapse}
+    username: ${SPRING_DATASOURCE_USERNAME:synapse}
+    password: ${SPRING_DATASOURCE_PASSWORD:synapse_dev_password}
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+```
+
+## Observability Configuration
+
+```yaml
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,prometheus
+  endpoint:
+    health:
+      probes:
+        enabled: true
+      group:
+        liveness:
+          include: livenessState,ping
+        readiness:
+          include: readinessState,db,ping
+  tracing:
+    sampling:
+      probability: 1.0
+```
+
+## Health Probe Endpoints
+
+SYNAPSE exposes:
+
+- `GET /api/health`
+- `GET /api/health/liveness`
+- `GET /api/health/readiness`
+
+Use these for load balancers, orchestrators, and automated checks.
+
+## Environment Variables (Observability)
+
+| Variable | Default | Purpose |
+|---|---|---|
+| `QDRANT_URL` | `http://localhost:6333` | Qdrant endpoint for readiness checks |
+| `QDRANT_HEALTH_ENABLED` | `true` | Enable/disable Qdrant check in readiness endpoint |
+| `MANAGEMENT_TRACING_SAMPLING_PROBABILITY` | `1.0` | Distributed tracing sample rate |
+
+## Logging Configuration
+
+SYNAPSE uses structured JSON logging with trace context fields:
+
+- `traceId`
+- `spanId`
+- `correlationId`
+
+This makes logs aggregation-ready for Loki/ELK/Datadog pipelines.
+
+## Related Docs
+
+- [Monitoring & Observability](./monitoring.mdx)
+- [Environment Variables](../deployment/environment-variables.mdx)

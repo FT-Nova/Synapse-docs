@@ -152,6 +152,7 @@ const sidebars: SidebarsConfig = {
         'administration/configuration',
         'administration/security',
         'administration/monitoring',
+        'administration/operations',
         'administration/upgrades',
       ],
     },

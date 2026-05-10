@@ -1,0 +1,92 @@
+---
+sidebar_position: 4
+---
+
+# Operations Runbook
+
+Operational procedures for monitoring, triage, and incident response.
+
+## Daily Checks
+
+1. Verify service status and probes:
+   - `GET /api/health`
+   - `GET /api/health/liveness`
+   - `GET /api/health/readiness`
+2. Confirm Prometheus target is `UP`.
+3. Check Grafana dashboard for:
+   - error rate spikes
+   - latency regressions
+   - memory pressure
+
+## Incident Triage Flow
+
+### Step 1: Confirm Readiness
+
+If `/api/health/readiness` is `DOWN`, inspect failing dependency:
+
+- `database`
+- `redis`
+- `qdrant`
+- `providers`
+
+### Step 2: Correlate Logs and Traces
+
+Use `correlationId`, then pivot to `traceId`/`spanId`.
+
+Suggested sequence:
+
+1. API response headers (`X-Correlation-ID`)
+2. backend logs (search `correlationId`)
+3. tracing backend (search `traceId`)
+4. Redis stream event payloads
+
+### Step 3: Validate Impact
+
+Check:
+
+- `rate(http_server_requests_seconds_count{status=~"5.."}[5m])`
+- `histogram_quantile(0.95, rate(http_server_requests_seconds_bucket[5m]))`
+- `jvm_memory_used_bytes`
+
+## Common Scenarios
+
+### Readiness Down - Database
+
+- verify PostgreSQL availability
+- validate datasource credentials
+- inspect connection pool exhaustion (`hikaricp_*`)
+
+### Readiness Down - Redis
+
+- verify Redis reachability
+- inspect Redis auth/ACL config
+- check connection saturation (`lettuce_*`)
+
+### Readiness Down - Providers
+
+- inspect provider API health
+- validate provider secrets/config
+- confirm network egress policies
+
+## Alerting Baseline
+
+At minimum, configure alerts for:
+
+- service down (`up == 0`)
+- sustained 5xx rate
+- high p95 latency
+- high JVM memory utilization
+
+## Release Validation Checklist (Observability)
+
+- [ ] `/actuator/prometheus` responds
+- [ ] probe endpoints (`/api/health/*`) return expected state
+- [ ] trace fields appear in logs (`traceId`, `spanId`, `correlationId`)
+- [ ] Prometheus target is healthy
+- [ ] Grafana dashboards render data
+
+## Related Docs
+
+- [Monitoring & Observability](./monitoring.mdx)
+- [REST API Reference](../api/rest-api.mdx)
+- [Troubleshooting](../deployment/troubleshooting.mdx)
