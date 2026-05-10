@@ -1,5 +1,628 @@
 # Troubleshooting
 
-Common deployment issues and solutions.
+Common issues and solutions for SYNAPSE deployment and operation.
 
-(Documentation in progress - will be completed in v2.0.3-dev)
+:::tip Quick Diagnostics
+Most issues can be diagnosed by checking:
+1. Service status (`docker-compose ps`)
+2. Container logs (`docker-compose logs`)
+3. Health endpoints (`curl http://localhost:8080/api/health`)
+:::
+
+## Deployment Issues
+
+### Services Won't Start
+
+**Symptoms:**
+- `docker-compose up` fails
+- Services show "Exited" status
+- Error messages in terminal
+
+**Diagnostic Steps:**
+
+```bash
+# Check service status
+docker-compose ps
+
+# View logs
+docker-compose logs
+
+# Check specific service
+docker-compose logs backend
+```
+
+**Common Causes:**
+
+#### Port Already in Use
+
+**Error:**
+```
+Error starting userland proxy: listen tcp 0.0.0.0:8080: bind: address already in use
+```
+
+**Solution:**
+```bash
+# Find process using port (Linux/macOS)
+sudo lsof -i :8080
+
+# Find process (Windows)
+netstat -ano | findstr :8080
+
+# Kill process or change port
+SERVER_PORT=8081 docker-compose up -d
+```
+
+#### Missing Environment Variables
+
+**Error:**
+```
+required: POSTGRES_PASSWORD is required
+```
+
+**Solution:**
+```bash
+# Create .env file
+cp .env.example .env
+
+# Edit with required values
+nano .env
+
+# Restart services
+docker-compose up -d
+```
+
+#### Insufficient Resources
+
+**Error:**
+```
+Cannot allocate memory
+```
+
+**Solution:**
+```bash
+# Check Docker resources
+docker stats
+
+# Increase Docker memory (Docker Desktop)
+# Settings → Resources → Memory → 4GB+
+
+# Free up disk space
+docker system prune -a
+```
+
+---
+
+### Database Connection Failed
+
+**Symptoms:**
+- Backend fails to start
+- "Connection refused" errors
+- "Unable to connect to database"
+
+**Diagnostic Steps:**
+
+```bash
+# Check PostgreSQL is running
+docker-compose ps postgres
+
+# Check PostgreSQL health
+docker-compose exec postgres pg_isready -U synapse
+
+# Test connection from backend container
+docker-compose exec backend nc -zv postgres 5432
+
+# Check PostgreSQL logs
+docker-compose logs postgres
+```
+
+**Common Causes:**
+
+#### Database Not Ready
+
+**Error:**
+```
+org.postgresql.util.PSQLException: Connection refused
+```
+
+**Solution:**
+
+Wait for database health check to pass:
+
+```yaml
+# Ensure backend waits for database
+services:
+  backend:
+    depends_on:
+      postgres:
+        condition: service_healthy  # ← Important!
+```
+
+Restart services:
+```bash
+docker-compose restart backend
+```
+
+#### Wrong Credentials
+
+**Error:**
+```
+FATAL: password authentication failed for user "synapse"
+```
+
+**Solution:**
+
+1. Check environment variables:
+   ```bash
+   docker-compose exec backend env | grep POSTGRES
+   ```
+
+2. Reset database with correct credentials:
+   ```bash
+   docker-compose down -v  # ⚠️ Deletes data!
+   docker-compose up -d
+   ```
+
+#### Database Corrupted
+
+**Error:**
+```
+FATAL: database files are incompatible with server
+```
+
+**Solution:**
+
+Restore from backup or reinitialize:
+```bash
+# Backup current data if possible
+docker-compose exec postgres pg_dumpall -U synapse > backup.sql
+
+# Remove corrupted volume
+docker-compose down -v
+
+# Start fresh
+docker-compose up -d
+
+# Restore data
+cat backup.sql | docker-compose exec -T postgres psql -U synapse
+```
+
+---
+
+### Redis Connection Issues
+
+**Symptoms:**
+- Cache not working
+- "Connection refused" to Redis
+
+**Diagnostic Steps:**
+
+```bash
+# Check Redis is running
+docker-compose ps redis
+
+# Test Redis
+docker-compose exec redis redis-cli ping
+# Expected: PONG
+
+# Check connection from backend
+docker-compose exec backend nc -zv redis 6379
+```
+
+**Solution:**
+
+```bash
+# Restart Redis
+docker-compose restart redis
+
+# Check Redis logs
+docker-compose logs redis
+
+# Reset Redis data (if corrupted)
+docker-compose exec redis redis-cli FLUSHALL
+```
+
+---
+
+## Runtime Issues
+
+### Application Slow or Unresponsive
+
+**Symptoms:**
+- Long response times
+- Timeouts
+- High CPU/memory usage
+
+**Diagnostic Steps:**
+
+```bash
+# Check resource usage
+docker stats
+
+# Check backend logs for slow queries
+docker-compose logs backend | grep "Slow query"
+
+# Check database connections
+docker-compose exec postgres psql -U synapse -c "SELECT count(*) FROM pg_stat_activity;"
+```
+
+**Common Causes:**
+
+#### Insufficient Resources
+
+**Solution:**
+
+Increase Docker resources or add resource limits:
+
+```yaml
+services:
+  backend:
+    deploy:
+      resources:
+        limits:
+          cpus: '2.0'
+          memory: 2G
+```
+
+#### Database Needs Optimization
+
+**Solution:**
+
+```bash
+# Run VACUUM ANALYZE
+docker-compose exec postgres psql -U synapse -d synapse -c "VACUUM ANALYZE;"
+
+# Check slow queries
+docker-compose exec postgres psql -U synapse -d synapse -c "
+  SELECT query, mean_exec_time
+  FROM pg_stat_statements
+  ORDER BY mean_exec_time DESC
+  LIMIT 10;
+"
+```
+
+#### Too Many Open Connections
+
+**Solution:**
+
+Reduce connection pool size:
+
+```bash
+# .env
+SPRING_DATASOURCE_HIKARI_MAXIMUM_POOL_SIZE=20
+SPRING_DATASOURCE_HIKARI_MINIMUM_IDLE=5
+```
+
+---
+
+### Authentication Failures
+
+**Symptoms:**
+- Cannot login
+- "Invalid credentials"
+- "JWT token invalid"
+
+**Diagnostic Steps:**
+
+```bash
+# Check JWT secret is set
+docker-compose exec backend env | grep JWT_SECRET
+
+# Check backend logs
+docker-compose logs backend | grep -i auth
+
+# Test login endpoint
+curl -X POST http://localhost:8080/api/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{"username":"admin","password":"admin"}'
+```
+
+**Common Causes:**
+
+#### JWT Secret Changed
+
+**Error:**
+```
+JWT signature does not match
+```
+
+**Solution:**
+
+**⚠️ Warning**: Changing JWT secret invalidates all existing tokens!
+
+If you must change it:
+1. Update `JWT_SECRET` in `.env`
+2. Restart backend
+3. All users must log in again
+
+#### Session Expired
+
+**Solution:**
+
+Users need to log in again. Configure longer session duration:
+
+```yaml
+# application.yml (future enhancement)
+jwt:
+  expiration: 86400000  # 24 hours in milliseconds
+```
+
+---
+
+### WebSocket Connection Failed
+
+**Symptoms:**
+- Real-time updates not working
+- "WebSocket connection failed" in browser console
+- Chat messages not sending
+
+**Diagnostic Steps:**
+
+```bash
+# Check browser console for errors
+# Expected: ws://localhost:8080/ws/chat
+
+# Test WebSocket endpoint
+wscat -c ws://localhost:8080/ws/chat
+```
+
+**Common Causes:**
+
+#### Reverse Proxy Missing Headers
+
+**Solution:**
+
+Ensure proxy passes Upgrade headers:
+
+**Nginx:**
+```nginx
+location /ws {
+    proxy_pass http://backend:8080;
+    proxy_http_version 1.1;
+    proxy_set_header Upgrade $http_upgrade;
+    proxy_set_header Connection "upgrade";
+}
+```
+
+**Traefik:**
+```yaml
+labels:
+  - "traefik.http.services.backend.loadbalancer.passhostheader=true"
+```
+
+#### CORS Issues
+
+**Solution:**
+
+Configure CORS to allow WebSocket origins:
+
+```bash
+# .env
+CORS_ALLOWED_ORIGINS=https://yourfrontend.com
+```
+
+---
+
+## Data Issues
+
+### Lost Data After Restart
+
+**Symptoms:**
+- Conversations disappeared
+- Agents missing
+- Settings reset
+
+**Cause:**
+
+Volumes not persisted or accidentally deleted.
+
+**Prevention:**
+
+```bash
+# Never use -v flag unless intentional!
+docker-compose down  # ✅ Preserves data
+docker-compose down -v  # ❌ DELETES ALL DATA!
+
+# Backup before maintenance
+./scripts/backup.sh
+```
+
+**Recovery:**
+
+Restore from backup (see [Backup & Restore](./backup-restore.md)).
+
+---
+
+### Database Migration Failed
+
+**Symptoms:**
+- Backend won't start
+- "Flyway migration failed"
+- Version mismatch errors
+
+**Diagnostic Steps:**
+
+```bash
+# Check migration status
+docker-compose exec postgres psql -U synapse -d synapse -c "
+  SELECT * FROM flyway_schema_history ORDER BY installed_rank DESC LIMIT 5;
+"
+
+# Check backend logs
+docker-compose logs backend | grep Flyway
+```
+
+**Solution:**
+
+```bash
+# Repair Flyway (if migration failed mid-way)
+docker-compose exec backend java -jar flyway-commandline.jar repair
+
+# Or manually fix in database
+docker-compose exec postgres psql -U synapse -d synapse
+
+# Check failed migration
+SELECT * FROM flyway_schema_history WHERE success = false;
+
+# Mark as successful (ONLY if you know what you're doing!)
+UPDATE flyway_schema_history SET success = true WHERE version = 'X.X';
+```
+
+---
+
+## Network Issues
+
+### Cannot Access Dashboard
+
+**Symptoms:**
+- Browser shows "Connection refused"
+- "This site can't be reached"
+
+**Diagnostic Steps:**
+
+```bash
+# Check dashboard is running
+docker-compose ps dashboard
+
+# Check port is exposed
+docker-compose port dashboard 80
+
+# Test locally
+curl http://localhost:3000
+```
+
+**Common Causes:**
+
+#### Firewall Blocking
+
+**Solution:**
+
+```bash
+# Check firewall (Linux)
+sudo ufw status
+
+# Allow port
+sudo ufw allow 3000/tcp
+
+# Check iptables
+sudo iptables -L -n | grep 3000
+```
+
+#### Wrong Port Mapping
+
+**Solution:**
+
+Check `docker-compose.yml`:
+```yaml
+services:
+  dashboard:
+    ports:
+      - "3000:80"  # host:container
+```
+
+Access on host port 3000, not 80.
+
+---
+
+### API Requests Failing
+
+**Symptoms:**
+- 502 Bad Gateway
+- CORS errors
+- Connection timeouts
+
+**Diagnostic Steps:**
+
+```bash
+# Test backend directly
+curl http://localhost:8080/api/health
+
+# Check from frontend container
+docker-compose exec dashboard curl backend:8080/api/health
+
+# Check network connectivity
+docker-compose exec dashboard ping backend
+```
+
+**Solution:**
+
+```bash
+# Restart network
+docker-compose down
+docker network prune
+docker-compose up -d
+
+# Check backend is in correct network
+docker inspect synapse_backend | grep NetworkMode
+```
+
+---
+
+## Logs and Debugging
+
+### Enable Debug Logging
+
+```bash
+# Temporary (restart to reset)
+docker-compose exec backend \
+  java -jar -Dlogging.level.dev.synapse=DEBUG /app/app.jar
+
+# Persistent (.env)
+LOGGING_LEVEL_DEV_SYNAPSE=DEBUG
+```
+
+### Collect Diagnostic Information
+
+```bash
+#!/bin/bash
+# diagnostic.sh
+
+echo "=== Docker Compose Status ==="
+docker-compose ps
+
+echo -e "\n=== Resource Usage ==="
+docker stats --no-stream
+
+echo -e "\n=== Backend Logs (last 50 lines) ==="
+docker-compose logs --tail=50 backend
+
+echo -e "\n=== Database Status ==="
+docker-compose exec postgres pg_isready -U synapse
+
+echo -e "\n=== Redis Status ==="
+docker-compose exec redis redis-cli ping
+
+echo -e "\n=== Network Connectivity ==="
+docker-compose exec backend curl -f http://localhost:8080/api/health
+```
+
+Run and share output when asking for help:
+```bash
+bash diagnostic.sh > diagnostic.log 2>&1
+```
+
+---
+
+## Getting Help
+
+If you can't resolve the issue:
+
+1. **Check documentation**: Search docs for your issue
+2. **Search GitHub issues**: [github.com/FTMahringer/Synapse/issues](https://github.com/FTMahringer/Synapse/issues)
+3. **Collect diagnostics**: Run diagnostic script above
+4. **Open issue**: Include:
+   - SYNAPSE version
+   - Deployment method (Docker Compose, Kubernetes, bare-metal)
+   - Operating system
+   - Error messages
+   - Diagnostic output
+   - Steps to reproduce
+
+---
+
+## Next Steps
+
+- [Docker Compose Deployment](./docker-compose.md)
+- [Backup & Restore](./backup-restore.md)
+- [Monitoring](../administration/monitoring.md)
+- [Security](../administration/security.md)
+
