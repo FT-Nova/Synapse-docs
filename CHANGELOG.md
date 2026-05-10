@@ -11,6 +11,30 @@ SYNAPSE Documentation uses **independent versioning** separate from the main SYN
 
 ---
 
+## [v0.0.7-dev] - 2026-05-10
+
+**Development version: GitHub Actions CI/CD workflows.**
+
+### Added
+- **GitHub Actions Workflows**
+  - `deploy-docs.yml` - Automated deployment to GitHub Pages
+  - `ci.yml` - Documentation CI pipeline (lint, build, link check)
+- **Automated Deployment**
+  - Deploys on every push to `main`
+  - Manual trigger via workflow_dispatch
+  - Build verification before deployment
+- **Quality Checks**
+  - Link checking with linkinator
+  - Build validation
+  - Format checking (when configured)
+
+### Infrastructure
+- GitHub Pages deployment automation
+- Multi-stage CI pipeline
+- Link integrity checking
+
+---
+
 ## [v0.0.6-dev] - 2026-05-10
 
 **Development version: Java-first plugin architecture documentation.**
