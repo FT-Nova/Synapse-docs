@@ -11,6 +11,26 @@ SYNAPSE Documentation uses **independent versioning** separate from the main SYN
 
 ---
 
+## [v0.0.5-dev] - 2026-05-10
+
+**Development version: Documentation cleanup and navigation improvements.**
+
+### Removed
+- **All "Next Steps" sections** removed from documentation pages
+  - Removed from 31 documentation files
+  - Docusaurus provides automatic "Next" page navigation
+  - Cleaner, more focused documentation
+- **All "See Also" sections** removed from plugin documentation
+  - Redundant cross-links removed
+  - Sidebar navigation is sufficient
+
+### Changed
+- **Improved focus** of documentation pages
+  - Each page focuses on its content without repetitive navigation
+  - Consistent documentation structure across all pages
+
+---
+
 ## [v0.0.4-dev] - 2026-05-10
 
 **Development version: Complete plugin documentation system and custom homepage.**
