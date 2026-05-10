@@ -1,36 +1,57 @@
 # Getting Started with Plugin Development
 
-Create your first SYNAPSE plugin in minutes.
+Create your first SYNAPSE plugin using Java and the official template.
 
 ## Prerequisites
 
-- SYNAPSE v2.0.0 or later
-- Python 3.11+ or Java 21+
-- Basic understanding of SYNAPSE concepts
+- **SYNAPSE v2.6.0 or later** (plugin system introduced)
+- **Java 21+** (LTS version)
+- **Gradle 8.5+** (build tool)
+- **Git** (for template repository)
+- Basic understanding of Java and Spring Boot
+
+:::info Java-First Plugins
+SYNAPSE uses a **Java-first plugin architecture** for maximum performance and integration.  
+Future versions will support external runtimes for Python, Node.js, and other languages.  
+See the [Plugin Language Strategy](https://github.com/FTMahringer/Synapse/blob/main/ideas/plugin-language-strategy.md) for details.
+:::
 
 ## Quick Start
 
-### 1. Create Plugin Directory
+### 1. Create Plugin from Template
+
+Use the official GitHub template repository:
 
 ```bash
-mkdir my-plugin
+# Option 1: Use GitHub's "Use this template" button
+# Visit: https://github.com/FTMahringer/Synapse-Plugin-Template
+# Click "Use this template" → "Create a new repository"
+
+# Option 2: Clone and modify
+git clone https://github.com/FTMahringer/Synapse-Plugin-Template.git my-plugin
 cd my-plugin
+rm -rf .git
+git init
+git add .
+git commit -m "Initial commit from template"
 ```
 
-### 2. Create Plugin Metadata
+### 2. Configure Your Plugin
 
-**plugin.yaml:**
+Update **`src/main/resources/plugin.yml`**:
+
 ```yaml
 name: my-plugin
 version: 1.0.0
 description: My first SYNAPSE plugin
 author: Your Name
 license: MIT
+homepage: https://github.com/YourOrg/my-plugin
 
-synapse_version: ">=2.0.0"
-runtime: python
+synapse_version: ">=2.6.0"
+runtime: java
 
-entry_point: src.my_plugin.MyPlugin
+main_class: dev.synapse.plugin.myplugin.MyPlugin
 
 tools:
   - name: greet
@@ -39,9 +60,9 @@ tools:
       - name: name
         type: string
         required: true
+        description: User name to greet
 
-permissions:
-  - none
+permissions: []
 
 limits:
   memory_mb: 128
@@ -49,92 +70,198 @@ limits:
   timeout_seconds: 10
 ```
 
-### 3. Create Plugin Code
+### 3. Implement Your Plugin
 
-**src/my_plugin.py:**
-```python
-from synapse.plugin import Plugin, tool
+Update **`src/main/java/dev/synapse/plugin/example/ExamplePlugin.java`**:
 
-class MyPlugin(Plugin):
-    """My first SYNAPSE plugin"""
-    
-    @tool(
-        name="greet",
-        description="Greet a user by name",
-        parameters={
-            "name": {"type": "string", "required": True}
-        }
+```java
+package dev.synapse.plugin.myplugin;
+
+import dev.synapse.plugin.api.SynapsePlugin;
+import dev.synapse.plugin.api.annotations.Plugin;
+import dev.synapse.plugin.api.annotations.Tool;
+import dev.synapse.plugin.api.annotations.Parameter;
+import dev.synapse.plugin.api.result.ToolResult;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
+
+@Slf4j
+@Component
+@Plugin(
+    name = "my-plugin",
+    version = "1.0.0",
+    description = "My first SYNAPSE plugin"
+)
+public class MyPlugin implements SynapsePlugin {
+
+    @Override
+    public void onLoad() {
+        log.info("My Plugin is loading...");
+    }
+
+    @Override
+    public void onEnable() {
+        log.info("My Plugin is now enabled!");
+    }
+
+    @Override
+    public void onDisable() {
+        log.info("My Plugin is shutting down");
+    }
+
+    @Tool(
+        name = "greet",
+        description = "Greet a user by name"
     )
-    def greet(self, name: str) -> str:
-        """Greet a user"""
-        return f"Hello, {name}! Welcome to SYNAPSE!"
+    public ToolResult greet(
+        @Parameter(name = "name", description = "User name") String name
+    ) {
+        String message = "Hello, " + name + "! Welcome to SYNAPSE!";
+        log.info("Greeting user: {}", name);
+        return ToolResult.success(message);
+    }
+}
 ```
 
-### 4. Test Your Plugin
+### 4. Add Dependencies (Optional)
 
-**tests/test_my_plugin.py:**
-```python
-import pytest
-from src.my_plugin import MyPlugin
+Update **`build.gradle`** to add external libraries:
 
-def test_greet():
-    plugin = MyPlugin()
-    result = plugin.greet("Alice")
-    assert result == "Hello, Alice! Welcome to SYNAPSE!"
-    assert "Alice" in result
+```gradle
+dependencies {
+    // Spring Boot (provided by SYNAPSE)
+    implementation 'org.springframework.boot:spring-boot-starter:3.2.0'
+    
+    // Your dependencies
+    implementation 'com.google.guava:guava:32.1.3-jre'
+    implementation 'org.apache.commons:commons-lang3:3.14.0'
+    
+    // Testing
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.10.1'
+    testImplementation 'org.assertj:assertj-core:3.24.2'
+}
+```
+
+### 5. Test Your Plugin
+
+Create **`src/test/java/dev/synapse/plugin/myplugin/MyPluginTest.java`**:
+
+```java
+package dev.synapse.plugin.myplugin;
+
+import dev.synapse.plugin.api.result.ToolResult;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import static org.assertj.core.api.Assertions.assertThat;
+
+class MyPluginTest {
+
+    private MyPlugin plugin;
+
+    @BeforeEach
+    void setUp() {
+        plugin = new MyPlugin();
+        plugin.onLoad();
+        plugin.onEnable();
+    }
+
+    @Test
+    void testGreet() {
+        ToolResult result = plugin.greet("Alice");
+        
+        assertThat(result.isSuccess()).isTrue();
+        assertThat(result.getData()).asString()
+            .contains("Alice")
+            .contains("Welcome");
+    }
+
+    @Test
+    void testGreetEmptyName() {
+        ToolResult result = plugin.greet("");
+        
+        assertThat(result.isSuccess()).isTrue();
+    }
+}
 ```
 
 Run tests:
 ```bash
-pytest tests/
+./gradlew test
 ```
 
-### 5. Install Locally
+### 6. Build the Plugin
+
+Build the plugin JAR:
+```bash
+./gradlew build
+```
+
+The built plugin will be in:
+```
+build/libs/my-plugin-1.0.0.jar
+```
+
+### 7. Install Locally
+
+For local testing with SYNAPSE:
 
 ```bash
-synapse plugin install --dev .
+# Copy to SYNAPSE plugins directory
+cp build/libs/my-plugin-1.0.0.jar /path/to/synapse/plugins/
+
+# Or use SYNAPSE CLI (future)
+synapse plugin install build/libs/my-plugin-1.0.0.jar
 ```
 
-### 6. Use in Agent
+## Next Steps
 
-Enable the plugin for an agent via UI or API.
+- 📖 [Plugin Tutorial](./plugin-tutorial.md) - Detailed walkthrough
+- 🧪 [Testing Guide](./testing.md) - Write comprehensive tests
+- 📦 [Publishing Guide](./publishing.md) - Share your plugin
+- 🤝 [Contributing](../community/contributing.md) - Submit to community repository
 
-Test it:
+## Template Repository
+
+The official template provides:
+
+✅ Complete Java/Gradle project structure  
+✅ Example plugin implementation  
+✅ Unit test examples  
+✅ CI/CD workflows (GitHub Actions)  
+✅ Plugin validation checks  
+✅ Documentation templates  
+
+**Repository:** https://github.com/FTMahringer/Synapse-Plugin-Template
+
+## Common Issues
+
+### ClassNotFoundException
+
+**Problem:** Plugin class cannot be found  
+**Solution:** Verify `main_class` in `plugin.yml` matches your Java package
+
+### Dependency Conflicts
+
+**Problem:** Version conflicts with SYNAPSE dependencies  
+**Solution:** Use `compileOnly` for SYNAPSE-provided dependencies
+
+```gradle
+dependencies {
+    compileOnly 'org.springframework.boot:spring-boot-starter:3.2.0'
+    implementation 'com.your:library:1.0.0'
+}
 ```
-User: Greet me as Bob
-Agent: [uses greet tool with name="Bob"]
-        Hello, Bob! Welcome to SYNAPSE!
+
+### Permission Denied
+
+**Problem:** Plugin cannot access filesystem/network  
+**Solution:** Declare required permissions in `plugin.yml`
+
+```yaml
+permissions:
+  - network.http
+  - filesystem.read
 ```
-
-## Plugin Examples
-
-Browse example plugins:
-- **Python**: https://github.com/FTMahringer/Synapse-plugin-examples
-- **Java**: https://github.com/FTMahringer/Synapse-plugin-examples-java
-
-## Development Tools
-
-### Plugin CLI
-
-```bash
-# Create plugin from template
-synapse plugin create my-plugin --template python
-
-# Validate plugin
-synapse plugin validate .
-
-# Test plugin
-synapse plugin test .
-
-# Package plugin
-synapse plugin package .
-```
-
-### Hot Reload
-
-Enable hot reload during development:
-
-```bash
 synapse dev --watch-plugins ./my-plugin
 ```
 

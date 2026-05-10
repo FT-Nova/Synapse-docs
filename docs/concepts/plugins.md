@@ -17,13 +17,26 @@ Plugins provide agents with:
 
 ## Quick Example
 
-```python
-@plugin(name="weather", version="1.0.0")
-class WeatherPlugin:
-    @tool(description="Get current weather for a city")
-    def get_weather(self, city: str) -> dict:
-        # Implementation here
-        return {"city": city, "temp": 72, "condition": "sunny"}
+```java
+@Plugin(
+    name = "weather",
+    version = "1.0.0",
+    description = "Get current weather information"
+)
+public class WeatherPlugin implements SynapsePlugin {
+    
+    @Tool(
+        name = "get_weather",
+        description = "Get weather for a location"
+    )
+    public ToolResult getWeather(
+        @Parameter(name = "location") String location
+    ) {
+        // Implementation here
+        WeatherData data = weatherService.getCurrentWeather(location);
+        return ToolResult.success(data);
+    }
+}
 ```
 
 :::tip Learn More
@@ -43,40 +56,49 @@ For complete plugin documentation, development guides, and the plugin catalog, s
 )
 public class WeatherPlugin implements SynapsePlugin {
     
-    @PluginAction(
+    @Tool(
         name = "get_weather",
         description = "Get weather for a location"
     )
-    public PluginResult getWeather(
+    public ToolResult getWeather(
         @Parameter(name = "location") String location
     ) {
         // Implementation
-        return PluginResult.success(weatherData);
+        return ToolResult.success(weatherData);
     }
 }
 ```
 
-### Plugin Metadata
+### Plugin Metadata (plugin.yml)
 
-```json
-{
-  "name": "weather",
-  "version": "1.0.0",
-  "author": "Your Name",
-  "description": "Weather information plugin",
-  "actions": [
-    {
-      "name": "get_weather",
-      "parameters": [
-        {
-          "name": "location",
-          "type": "string",
-          "required": true
-        }
-      ]
-    }
-  ]
-}
+```yaml
+name: weather
+version: 1.0.0
+author: Your Name
+description: Weather information plugin
+homepage: https://github.com/yourorg/weather-plugin
+
+synapse_version: ">=2.6.0"
+runtime: java
+
+main_class: dev.synapse.plugin.weather.WeatherPlugin
+
+tools:
+  - name: get_weather
+    description: Get current weather for a location
+    parameters:
+      - name: location
+        type: string
+        required: true
+        description: City name or coordinates
+
+permissions:
+  - network.http
+
+limits:
+  memory_mb: 256
+  cpu_percent: 30
+  timeout_seconds: 15
 ```
 
 ## Plugin Security
@@ -84,28 +106,71 @@ public class WeatherPlugin implements SynapsePlugin {
 ### Sandboxing
 Plugins run in isolated environments with:
 - Resource limits (CPU, memory)
-- Network restrictions
-- File system restrictions
+- ClassLoader isolation
+- Permission-based access control
 - Timeout enforcement
 
 ### Permissions
-Plugins declare required permissions:
-- Network access
-- File system access
-- External API access
-- Database access
+Plugins declare required permissions in `plugin.yml`:
+- `network.http` - HTTP/HTTPS requests
+- `network.socket` - Raw socket access
+- `filesystem.read` - Read files
+- `filesystem.write:<path>` - Write to specific paths
+- `database.read` - Read from database
+- `database.write` - Write to database
 
 ### Validation
 All plugins are validated before loading:
-- Code signing (planned v2.7.0)
+- Manifest validation
 - Dependency scanning
+- Signature verification (planned v2.6.0)
 - Security auditing
 
-## Plugin Marketplace (Planned v2.7.0)
+## Plugin Development
 
+### Template Repository
+
+Start quickly with the official Java template:
+
+📦 **https://github.com/FTMahringer/Synapse-Plugin-Template**
+
+Features:
+- ✅ Complete Gradle project structure
+- ✅ Example plugin implementation
+- ✅ Unit tests with JUnit 5 & AssertJ
+- ✅ GitHub Actions CI/CD
+- ✅ Plugin validation workflows
+
+### Creating a Plugin
+
+1. **Use GitHub template** - Click "Use this template"
+2. **Configure plugin.yml** - Set name, version, metadata
+3. **Implement SynapsePlugin** - Add your tools
+4. **Write tests** - Test with JUnit 5
+5. **Build JAR** - `./gradlew build`
+6. **Submit** - Pull request to community repository
+
+See [Getting Started Guide](/docs/plugins/development/getting-started) for details.
+
+## Plugin Repositories
+
+### Official Plugins
+**Repository:** https://github.com/FTMahringer/Synapse-Plugins
+
+Curated plugins maintained by the core team. Read-only for community.
+
+### Community Plugins
+**Repository:** https://github.com/FTMahringer/Synapse-Plugins-Community
+
+Community-contributed plugins. Submit via Pull Request!
+
+## Plugin Marketplace (Planned v2.6.0)
+
+Future features:
 - Discover community plugins
 - Plugin ratings and reviews
 - Automatic updates
+- Versioning and compatibility checking
 - Security verification
 
 ## Installing Plugins

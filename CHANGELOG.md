@@ -11,6 +11,35 @@ SYNAPSE Documentation uses **independent versioning** separate from the main SYN
 
 ---
 
+## [v0.0.6-dev] - 2026-05-10
+
+**Development version: Java-first plugin architecture documentation.**
+
+### Changed
+- **BREAKING**: Updated all plugin documentation to Java-first architecture
+- Updated `plugins/architecture.md` with Java-native runtime structure
+- Rewrote `plugins/development/getting-started.md` for Java/Gradle/Spring Boot
+- Updated `concepts/plugins.md` with Java code examples
+- Replaced Python plugin examples with Java implementations
+- Added Java plugin template repository references
+- Added plugin repository links (Official & Community)
+
+### Added
+- Java-first plugin architecture documentation
+- Link to Plugin Language Strategy document
+- Template repository information and usage instructions  
+  (https://github.com/FTMahringer/Synapse-Plugin-Template)
+- Gradle build configuration examples
+- JUnit 5 + AssertJ testing examples
+- Plugin JAR packaging documentation
+- Plugin repository links (Official & Community)
+
+### Removed
+- Python plugin code examples (deferred to future external runtime)
+- Outdated Python-based development workflow
+
+---
+
 ## [v0.0.5-dev] - 2026-05-10
 
 **Development version: Documentation cleanup and navigation improvements.**

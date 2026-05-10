@@ -2,6 +2,12 @@
 
 Technical overview of SYNAPSE's plugin system architecture.
 
+:::info Java-First Architecture
+SYNAPSE follows a **Java-first plugin architecture** with native JVM integration.  
+For details on the language strategy and future multi-language support, see:  
+📋 [Plugin Language Strategy](https://github.com/FTMahringer/Synapse/blob/main/ideas/plugin-language-strategy.md)
+:::
+
 ## System Overview
 
 ```mermaid
@@ -23,9 +29,8 @@ graph TB
     end
     
     subgraph "Execution Layer"
-        H[Python Runtime]
-        I[Java Runtime]
-        J[External Process]
+        H[Java Runtime - Native]
+        I[External Runtime - Future]
     end
     
     A -->|Request Tool| B
@@ -35,10 +40,8 @@ graph TB
     E --> F
     F --> H
     F --> I
-    F --> J
     G --> H
     G --> I
-    G --> J
 ```
 
 ## Plugin Lifecycle
@@ -95,39 +98,59 @@ sequenceDiagram
 
 ## Plugin Structure
 
-### Required Files
+### Java Plugin Structure (Current)
 
 ```
 my-plugin/
-├── plugin.yaml          # Plugin metadata
+├── plugin.yml                    # Plugin metadata
+├── build.gradle                  # Gradle build configuration
+├── settings.gradle               # Gradle settings
 ├── src/
-│   ├── __init__.py     # Plugin entry point (Python)
-│   └── tools/          # Tool implementations
-├── tests/              # Plugin tests
-├── requirements.txt    # Python dependencies (optional)
-├── pom.xml            # Java dependencies (optional)
-└── README.md          # Documentation
+│   ├── main/
+│   │   ├── java/                # Plugin source code
+│   │   │   └── dev/synapse/plugin/
+│   │   │       └── MyPlugin.java
+│   │   └── resources/
+│   │       └── application.yml  # Spring Boot configuration
+│   └── test/
+│       └── java/                # Unit tests
+├── docs/                        # Plugin documentation
+├── examples/                    # Usage examples
+└── README.md                    # Project documentation
 ```
 
-### Plugin Metadata (plugin.yaml)
+### External Plugin Structure (Future v2.7.0+)
+
+For future multi-language support via external runtime:
+```
+my-plugin/
+├── plugin.yaml          # Plugin metadata
+├── src/                 # Source code (any language)
+├── tests/               # Plugin tests
+└── README.md           # Documentation
+```
+
+### Plugin Metadata (plugin.yml)
 
 ```yaml
+# Plugin Identity
 name: my-plugin
 version: 1.0.0
-description: My custom plugin
+description: My custom SYNAPSE plugin
 author: Your Name
 license: MIT
+homepage: https://github.com/YourOrg/my-plugin
 
 # SYNAPSE version compatibility
-synapse_version: ">=2.0.0"
+synapse_version: ">=2.6.0"
 
-# Runtime
-runtime: python  # or java
+# Runtime (currently only 'java' supported)
+runtime: java
 
-# Entry point
-entry_point: src.my_plugin.MyPlugin
+# Java Entry Point
+main_class: dev.synapse.plugin.MyPlugin
 
-# Tools provided
+# Tools provided by this plugin
 tools:
   - name: my_tool
     description: Does something useful
@@ -135,14 +158,15 @@ tools:
       - name: input
         type: string
         required: true
+        description: Input parameter
 
 # Dependencies
 dependencies:
-  python:
-    - requests>=2.31.0
-    - beautifulsoup4>=4.12.0
+  # Other SYNAPSE plugins this plugin depends on
   plugins:
     - web-search>=1.0.0
+  # Java/Maven dependencies (managed in build.gradle)
+  # External dependencies listed here for visibility
 
 # Security
 permissions:
