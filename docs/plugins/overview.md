@@ -118,5 +118,5 @@ graph TD
 ## Getting Started
 
 1. **Install a Plugin**: [Installation Guide](/docs/plugins/development/getting-started#installation)
-2. **Use in Agent**: [Agent Configuration](/docs/guides/agent-management)
+2. **Use in Agent**: [Agent Configuration](/docs/getting-started/first-agent)
 3. **Create Your Own**: [Plugin Tutorial](/docs/plugins/development/plugin-tutorial)

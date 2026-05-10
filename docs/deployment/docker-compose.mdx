@@ -176,7 +176,7 @@ docker-compose exec backend curl -f http://localhost:8080/api/health
 
 ### Environment Variables
 
-See [Environment Variables Reference](./environment-variables.md) for complete list.
+See [Environment Variables Reference](./environment-variables.mdx) for complete list.
 
 **Essential variables:**
 
@@ -322,7 +322,7 @@ docker-compose logs -f
 
 ### Major Version Upgrade
 
-Follow migration guide: [Administration → Upgrades](../administration/upgrades.md)
+Follow migration guide: [Administration → Upgrades](../administration/upgrades.mdx)
 
 ## Troubleshooting
 
@@ -382,7 +382,7 @@ BACKEND_PORT=8081 docker-compose up -d
 3. **Optimize database**: Run `VACUUM ANALYZE` on PostgreSQL
 4. **Check logs**: Look for slow queries
 
-See [Deployment → Troubleshooting](./troubleshooting.md) for more issues.
+See [Deployment → Troubleshooting](./troubleshooting.mdx) for more issues.
 
 ## Monitoring
 
@@ -401,7 +401,7 @@ docker-compose ps
 
 ### Advanced Monitoring
 
-See [Administration → Monitoring](../administration/monitoring.md) for:
+See [Administration → Monitoring](../administration/monitoring.mdx) for:
 - Prometheus + Grafana setup
 - Application metrics
 - Alert configuration
@@ -425,7 +425,7 @@ docker-compose exec -T postgres pg_dump -U synapse synapse > backup.sql
 cat backup.sql | docker-compose exec -T postgres psql -U synapse synapse
 ```
 
-See [Deployment → Backup & Restore](./backup-restore.md) for automated backup.
+See [Deployment → Backup & Restore](./backup-restore.mdx) for automated backup.
 
 ## Security Hardening
 
@@ -435,7 +435,7 @@ See [Deployment → Backup & Restore](./backup-restore.md) for automated backup.
 4. **Regular updates**: Keep images updated
 5. **Audit logs**: Enable and monitor
 
-See [Administration → Security](../administration/security.md).
+See [Administration → Security](../administration/security.mdx).
 
 ## Production Architecture
 
