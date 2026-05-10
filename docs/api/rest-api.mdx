@@ -4,7 +4,7 @@ sidebar_position: 2
 
 # REST API Reference
 
-This page documents the core operational endpoints added/updated in the observability milestone (v2.1.1-dev through v2.1.4-dev).
+This page documents core operational endpoints, including observability and memory-tier APIs.
 
 ## Health Endpoints
 
@@ -92,6 +92,56 @@ SYNAPSE logging and events propagate the following context fields:
 - `correlationId`
 
 This allows request tracing across API logs and Redis event stream entries.
+
+## Agent Memory Endpoints
+
+### `GET /api/agents/{agentId}/memory`
+
+List memory entries for an agent.
+
+Optional query params:
+- `namespace`
+- `tier` (`SHORT_TERM`, `KNOWLEDGE`, `ARCHIVE`)
+
+### `GET /api/agents/{agentId}/memory/{key}`
+
+Get one memory entry by key.
+
+### `PUT /api/agents/{agentId}/memory/{key}`
+
+Upsert a memory entry (defaults to `SHORT_TERM` on first write).
+
+Body:
+
+```json
+{
+  "key": "project.summary",
+  "value": "Current sprint focus is memory tiering",
+  "namespace": "project"
+}
+```
+
+### `POST /api/agents/{agentId}/memory/{key}/promote`
+
+Promote an entry to another tier with explicit reason.
+
+Body:
+
+```json
+{
+  "targetTier": "KNOWLEDGE",
+  "reason": "MANUAL"
+}
+```
+
+Allowed transitions:
+- `SHORT_TERM -> KNOWLEDGE`
+- `SHORT_TERM -> ARCHIVE`
+- `KNOWLEDGE -> ARCHIVE`
+
+### `DELETE /api/agents/{agentId}/memory/{key}`
+
+Delete a memory entry by key.
 
 ## Notes
 

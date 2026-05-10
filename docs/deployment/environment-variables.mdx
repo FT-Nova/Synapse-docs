@@ -622,6 +622,66 @@ SYNAPSE_HTTP_CONNECT_TIMEOUT_SECONDS=10
 
 ---
 
+### SYNAPSE_MEMORY_AUTO_PROMOTE_REUSE_THRESHOLD
+
+**Description**: Number of reads before `SHORT_TERM` memory auto-promotes to `KNOWLEDGE`
+
+**Type**: Integer
+
+**Default**: `5`
+
+**Example**:
+```bash
+SYNAPSE_MEMORY_AUTO_PROMOTE_REUSE_THRESHOLD=5
+```
+
+---
+
+### SYNAPSE_MEMORY_KNOWLEDGE_COMPACTION_DAYS
+
+**Description**: Age threshold (days) used by monthly knowledge-to-archive compaction
+
+**Type**: Integer
+
+**Default**: `30`
+
+**Example**:
+```bash
+SYNAPSE_MEMORY_KNOWLEDGE_COMPACTION_DAYS=30
+```
+
+---
+
+### SYNAPSE_MEMORY_MONTHLY_KNOWLEDGE_CRON
+
+**Description**: Cron expression for monthly knowledge compaction job
+
+**Type**: Cron expression (Spring format)
+
+**Default**: `0 0 3 1 * *`
+
+**Example**:
+```bash
+SYNAPSE_MEMORY_MONTHLY_KNOWLEDGE_CRON="0 0 3 1 * *"
+```
+
+---
+
+### SYNAPSE_MEMORY_BIMONTHLY_ARCHIVE_CRON
+
+**Description**: Cron expression for bi-monthly archive cleanup/compaction scan
+
+**Type**: Cron expression (Spring format)
+
+**Default**: `0 0 3 1 */2 *`
+
+**Example**:
+```bash
+SYNAPSE_MEMORY_BIMONTHLY_ARCHIVE_CRON="0 0 3 1 */2 *"
+```
+
+---
+
 ## Model Provider Configuration
 
 ### OPENAI_API_KEY

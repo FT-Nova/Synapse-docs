@@ -1,84 +1,62 @@
 # Memory System
 
-SYNAPSE implements a multi-tiered memory system for agents to maintain context and knowledge.
+SYNAPSE uses a three-tier agent memory lifecycle to keep context fast, reusable knowledge clean, and historical storage compact.
 
 ## Memory Tiers
 
-### 1. Short-Term Memory (Redis)
-**Purpose**: Immediate conversation context
+### 1. SHORT_TERM
+**Purpose**: Fresh conversational context and high-churn memory writes.
 
-- Active conversation state
-- Recent message buffer
-- Temporary user preferences
-- Session data
+- Default tier for new memory entries
+- Session-adjacent context
+- Fast-changing temporary values
 
-**TTL**: Configurable, typically 1-24 hours
+### 2. KNOWLEDGE
+**Purpose**: Stable, frequently reused, or explicitly pinned memory.
 
-### 2. Long-Term Memory (PostgreSQL)
-**Purpose**: Persistent conversation history
+- Promoted from `SHORT_TERM` after reuse/pinning
+- Stores high-signal facts, preferences, and decisions
+- Serves as curated long-lived working knowledge
 
-- All messages and conversations
-- User profiles and preferences
-- Agent configurations
-- Task and project data
+### 3. ARCHIVE
+**Purpose**: Compressed/summarized historical memory artifacts.
 
-**Retention**: Indefinite (configurable)
-
-### 3. Semantic Memory (Qdrant)
-**Purpose**: Knowledge retrieval
-
-- Vector embeddings of conversations
-- Semantic search capabilities
-- Context-aware memory recall
-- Cross-conversation knowledge
-
-**Indexing**: Automatic background processing
+- Receives summarized outputs from short-term and knowledge consolidation
+- Used for broader historical context with lower noise
+- Optimized for retention efficiency
 
 ## How Memory Works
 
 ### Conversation Flow
-1. User sends message
-2. System retrieves relevant semantic memory from Qdrant
-3. Combines with recent conversation history from Redis
-4. Sends context to AI model
-5. Stores response in PostgreSQL
-6. Updates vector embeddings in Qdrant
+1. New memory is written to `SHORT_TERM`.
+2. Retrieval prefers `SHORT_TERM`, then `KNOWLEDGE`, then `ARCHIVE`.
+3. Reuse and policy signals can promote entries:
+   - `SHORT_TERM -> KNOWLEDGE`
+   - `SHORT_TERM -> ARCHIVE`
+   - `KNOWLEDGE -> ARCHIVE`
+4. Summarization/compression outputs are written to `ARCHIVE`.
 
 ### Memory Retrieval
-Agents access memory through:
-- **Recency**: Most recent messages
-- **Relevance**: Semantic similarity search
-- **Importance**: Weighted by significance
+Agents can retrieve memory by:
+- tier-priority default ordering
+- explicit tier filter (`SHORT_TERM`, `KNOWLEDGE`, `ARCHIVE`)
+- namespace and key
 
-## Configuration
+## Lifecycle Cadence
 
-### Memory Depth
-Controls how much history is sent to the AI model:
+To control storage growth and retrieval quality:
 
-```yaml
-memory:
-  shortTermWindow: 20    # Recent messages
-  semanticResults: 5     # Relevant past memories
-  maxTokens: 4000        # Total context tokens
-```
+- **Monthly knowledge compaction**: stale `KNOWLEDGE` is consolidated toward `ARCHIVE`.
+- **Bi-monthly archive cleanup**: archive scans for duplicate/similar artifacts and compaction candidates.
 
-### Vector Embeddings
-Automatic embedding generation for semantic search:
-
-```yaml
-embeddings:
-  provider: openai       # or local model
-  model: text-embedding-3-small
-  batchSize: 100
-  updateInterval: 5m
-```
+Cadence is configurable through environment variables.
 
 ## Memory Management
 
 ### Pruning Strategies
-- **Time-based**: Remove old conversations
-- **Size-based**: Limit total memory size
-- **Importance-based**: Keep significant memories
+- **Tier-based**: stronger expiry in `SHORT_TERM`, curated retention in `KNOWLEDGE`
+- **Compaction-based**: summarize and consolidate into `ARCHIVE`
+- **Dedup-based**: merge similar archive artifacts over time
 
 ### Export and Backup
 Export conversation memories:
@@ -101,7 +79,7 @@ synapse-cli memory export --agent agent-123 --format json
 
 ## Advanced Features (Planned)
 
-- **Memory Summarization** (v2.5.0): Compress old conversations
-- **Cross-Agent Memory** (v2.5.0): Shared team knowledge
-- **Memory Tagging** (v2.5.0): Organize memories by topic
-- **Selective Forgetting** (v2.6.0): Delete specific memories
+- semantic memory weighting by tier confidence
+- policy-driven promotion feedback loops
+- cross-agent shared knowledge layers
+- selective forgetting and archive restoration workflows
