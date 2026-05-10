@@ -5,7 +5,7 @@ Learn how to create custom plugins to extend SYNAPSE with new capabilities.
 :::tip Prerequisites
 - Basic programming knowledge (Python, JavaScript, or Java)
 - Understanding of SYNAPSE [architecture](../concepts/architecture.md)
-- SYNAPSE development environment ([setup guide](./environment-setup.md))
+- SYNAPSE development environment ([setup guide](../development/environment-setup.md))
 :::
 
 ## Plugin System Overview
