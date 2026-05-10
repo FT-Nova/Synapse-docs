@@ -547,6 +547,81 @@ SPRING_DATASOURCE_HIKARI_MINIMUM_IDLE=10
 
 ---
 
+### SPRING_DATA_REDIS_LETTUCE_POOL_MAX_ACTIVE
+
+**Description**: Maximum active Redis connections in the Lettuce pool
+
+**Type**: Integer
+
+**Default**: `32`
+
+**Example**:
+```bash
+SPRING_DATA_REDIS_LETTUCE_POOL_MAX_ACTIVE=32
+```
+
+---
+
+### SPRING_DATA_REDIS_LETTUCE_POOL_MAX_IDLE
+
+**Description**: Maximum idle Redis connections
+
+**Type**: Integer
+
+**Default**: `16`
+
+**Example**:
+```bash
+SPRING_DATA_REDIS_LETTUCE_POOL_MAX_IDLE=16
+```
+
+---
+
+### SPRING_DATA_REDIS_LETTUCE_POOL_MIN_IDLE
+
+**Description**: Minimum idle Redis connections
+
+**Type**: Integer
+
+**Default**: `4`
+
+**Example**:
+```bash
+SPRING_DATA_REDIS_LETTUCE_POOL_MIN_IDLE=4
+```
+
+---
+
+### SYNAPSE_HTTP_POOL_MAX_THREADS
+
+**Description**: Max worker threads for pooled outbound HTTP client used by model providers
+
+**Type**: Integer
+
+**Default**: `64`
+
+**Example**:
+```bash
+SYNAPSE_HTTP_POOL_MAX_THREADS=64
+```
+
+---
+
+### SYNAPSE_HTTP_CONNECT_TIMEOUT_SECONDS
+
+**Description**: Connection timeout (seconds) for pooled outbound provider HTTP calls
+
+**Type**: Integer
+
+**Default**: `10`
+
+**Example**:
+```bash
+SYNAPSE_HTTP_CONNECT_TIMEOUT_SECONDS=10
+```
+
+---
+
 ## Model Provider Configuration
 
 ### OPENAI_API_KEY

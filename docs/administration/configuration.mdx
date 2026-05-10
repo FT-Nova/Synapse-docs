@@ -15,10 +15,21 @@ spring:
     url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/synapse}
     username: ${SPRING_DATASOURCE_USERNAME:synapse}
     password: ${SPRING_DATASOURCE_PASSWORD:synapse_dev_password}
+    hikari:
+      minimum-idle: 5
+      maximum-pool-size: 25
+      connection-timeout: 30000
   data:
     redis:
       host: ${REDIS_HOST:localhost}
       port: ${REDIS_PORT:6379}
+      timeout: 3s
+      lettuce:
+        pool:
+          enabled: true
+          max-active: 32
+          max-idle: 16
+          min-idle: 4
 ```
 
 ## Observability Configuration
@@ -60,6 +71,24 @@ Use these for load balancers, orchestrators, and automated checks.
 | `QDRANT_URL` | `http://localhost:6333` | Qdrant endpoint for readiness checks |
 | `QDRANT_HEALTH_ENABLED` | `true` | Enable/disable Qdrant check in readiness endpoint |
 | `MANAGEMENT_TRACING_SAMPLING_PROBABILITY` | `1.0` | Distributed tracing sample rate |
+
+## Connection Pooling (v2.2.4-dev)
+
+SYNAPSE now uses tuned pools for:
+
+- PostgreSQL via HikariCP
+- Redis via Lettuce pooling
+- outbound provider HTTP via shared pooled `RestClient`
+
+Recommended first-pass production values:
+
+| Variable | Suggested |
+|---|---|
+| `SPRING_DATASOURCE_HIKARI_MAXIMUM_POOL_SIZE` | `25` |
+| `SPRING_DATASOURCE_HIKARI_MINIMUM_IDLE` | `5` |
+| `SPRING_DATA_REDIS_LETTUCE_POOL_MAX_ACTIVE` | `32` |
+| `SPRING_DATA_REDIS_LETTUCE_POOL_MAX_IDLE` | `16` |
+| `SYNAPSE_HTTP_POOL_MAX_THREADS` | `64` |
 
 ## Logging Configuration
 

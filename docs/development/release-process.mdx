@@ -5,8 +5,13 @@ This page describes how SYNAPSE backend and documentation releases are validated
 ## Versioning Model
 
 - Backend (`Synapse`): `vX.Y.Z` and `vX.Y.Z-dev` pre-release tags
-- Docs (`synapse-docs`): independent versioning and release cadence
+- Docs (`synapse-docs`): milestone-coupled `vD.N` and `vD.N-dev` pre-releases
 - Security fixes are shipped as explicit hotfix releases
+
+Docs mapping rule:
+- `D` = backend major version (currently `2`)
+- `N` increments when a new `v2.x.*` milestone family introduces docs changes
+- Example: docs updates in `v2.3.x-dev` map to `synapse-docs` pre-release `v2.1-dev`
 
 ## Backend Release Flow
 
@@ -23,7 +28,8 @@ This page describes how SYNAPSE backend and documentation releases are validated
    - Documentation CI
    - Deploy Documentation
 3. Fix all build and link issues.
-4. Tag/publish docs release for milestone completion.
+4. Create docs pre-release (`vD.N-dev`) for docs-affecting dev versions.
+5. Tag/publish milestone docs release (`vD.N`) for milestone completion.
 
 ## Observability Release Checklist (v2.2.0+)
 
