@@ -56,6 +56,66 @@ const sidebars: SidebarsConfig = {
     },
   ],
 
+  pluginsSidebar: [
+    {
+      type: 'category',
+      label: 'Overview',
+      items: [
+        'plugins/overview',
+        'plugins/architecture',
+      ],
+    },
+    {
+      type: 'category',
+      label: 'Official Plugins',
+      collapsed: false,
+      items: [
+        'plugins/official/overview',
+        'plugins/official/web-search',
+        'plugins/official/file-operations',
+        'plugins/official/code-execution',
+        'plugins/official/api-client',
+      ],
+    },
+    {
+      type: 'category',
+      label: 'Community Plugins',
+      collapsed: false,
+      items: [
+        'plugins/community/overview',
+        'plugins/community/contributing',
+      ],
+    },
+    {
+      type: 'category',
+      label: 'Official Bundles',
+      collapsed: false,
+      items: [
+        'plugins/bundles/official/overview',
+        'plugins/bundles/official/developer-toolkit',
+      ],
+    },
+    {
+      type: 'category',
+      label: 'Community Bundles',
+      collapsed: false,
+      items: [
+        'plugins/bundles/community/overview',
+      ],
+    },
+    {
+      type: 'category',
+      label: 'Development',
+      items: [
+        'plugins/development/getting-started',
+        'plugins/development/plugin-tutorial',
+        'plugins/development/bundle-tutorial',
+        'plugins/development/testing',
+        'plugins/development/publishing',
+      ],
+    },
+  ],
+
   deploymentSidebar: [
     {
       type: 'category',

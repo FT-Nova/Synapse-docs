@@ -11,6 +11,160 @@ SYNAPSE Documentation uses **independent versioning** separate from the main SYN
 
 ---
 
+## [v0.0.4-dev] - 2026-05-10
+
+**Development version: Complete plugin documentation system and custom homepage.**
+
+### Documentation
+
+#### Plugin System Documentation
+- **Plugin Overview** created with comprehensive plugin ecosystem explanation
+  - Plugin types (Tools, Integrations, Data Processors, Custom Behaviors)
+  - Official vs Community plugins
+  - Plugin bundles (pre-configured collections)
+  - Plugin repositories (official private, community public)
+  - Security features (sandboxing, permissions, resource limits)
+  - Installation methods and dependency management
+  - Hot reload support
+  - Plugin architecture Mermaid diagram
+- **Plugin Architecture** created with technical deep-dive
+  - System overview diagram
+  - Plugin lifecycle (Discovery, Loading, Execution, Cleanup)
+  - Detailed sequence diagrams for each lifecycle phase
+  - Plugin structure and metadata (plugin.yaml specification)
+  - Security model (permission system, sandbox isolation, code signing)
+  - Tool interface examples (Python and Java)
+  - Event hooks system
+  - Dependency management and resolution
+  - Performance considerations (lazy loading, caching, batching)
+  - Monitoring and debugging capabilities
+
+#### Official Plugins Documentation
+- **Official Plugins Overview** with installation guides
+- **Web Search Plugin** documentation
+  - Multiple providers (Google, Bing, DuckDuckGo, SearXNG)
+  - API configuration for each provider
+  - Tools: web_search, get_webpage_content
+  - Usage examples and privacy considerations
+  - Troubleshooting (rate limiting, slow searches)
+- **File Operations Plugin** documentation
+  - Secure file system access
+  - Tools: read_file, write_file, list_directory, search_files, create_archive, extract_archive
+  - Security features (path validation, size limits, extension filtering)
+  - Configuration examples
+  - Troubleshooting guides
+- **Code Execution Plugin** documentation
+  - Supported languages (Python, JavaScript, Java, Bash, Ruby, Go)
+  - Sandboxed execution environment
+  - Security isolation features
+  - Resource limits per execution
+  - Language-specific features
+  - Error handling examples
+  - Best practices for security and performance
+- **API Client Plugin** documentation
+  - HTTP methods support
+  - Authentication types (API key, Bearer token, Basic Auth)
+  - Request/response handling
+  - Usage examples
+
+#### Community Plugins Documentation
+- **Community Plugins Overview** with discovery and installation
+  - Quality and safety warnings
+  - Plugin discovery methods
+  - Installation from GitHub
+  - Review guidelines before installation
+- **Contributing Community Plugins** comprehensive guide
+  - Contribution process (create, test, submit PR, review)
+  - Plugin categories (ai-tools, data, devops, integrations, productivity, security, utilities)
+  - Plugin template usage
+  - Quality guidelines (code quality, security, documentation, testing)
+  - Example plugin structure
+  - Support channels
+
+#### Plugin Bundles Documentation
+- **Official Bundles Overview**
+  - Developer Toolkit, Data Science Bundle, DevOps Bundle
+  - Bundle management commands (install, update, remove)
+  - Custom bundle creation with bundle.yaml
+- **Developer Toolkit Bundle** detailed documentation
+  - Included plugins (Git, Code Linter, GitHub Issues, CI/CD Integration)
+  - Configuration presets (Beginner, Professional, Team)
+  - Example workflows (code review, issue creation, CI/CD status)
+  - System requirements
+- **Community Bundles Overview** with contribution guidelines
+
+#### Plugin Development Documentation
+- **Getting Started** with plugin development
+  - Quick start tutorial (5-step plugin creation)
+  - Plugin metadata specification
+  - Simple plugin implementation example
+  - Testing setup
+  - Development tools (Plugin CLI, hot reload)
+- **Plugin Tutorial** complete walkthrough
+  - GitHub Issues Plugin example (production-ready)
+  - Project setup and structure
+  - Full implementation (list_issues, create_issue tools)
+  - Comprehensive testing with mocks
+  - Documentation template
+  - Packaging and publishing workflow
+- **Bundle Tutorial** comprehensive guide
+  - Developer Toolkit Bundle creation example
+  - Bundle structure and metadata
+  - Configuration presets system
+  - Installation script
+  - Bundle testing
+  - Publishing process
+  - Best practices for bundle creation
+  - Advanced features (conditional plugins, relationships, hooks)
+- **Testing Guide** with comprehensive examples
+  - Test levels (unit, integration, end-to-end)
+  - Python and Java testing examples
+  - Test coverage measurement
+  - Best practices and organization
+  - CI/CD integration (GitHub Actions)
+  - Common test scenarios (errors, timeouts, validation, security)
+  - Performance testing
+- **Publishing Guide** for sharing plugins
+  - Publishing options (community repository, independent repository, local distribution)
+  - Step-by-step community repository submission
+  - Semantic versioning guidelines
+  - CHANGELOG management
+  - Complete plugin.yaml metadata
+  - README template
+  - Plugin marketing strategies
+  - Maintenance and deprecation procedures
+  - Analytics tracking
+
+### Website Changes
+- **Custom Homepage** created replacing default Docusaurus template
+  - SYNAPSE-specific hero section
+  - Feature highlights (6 key features)
+  - Quick links section with cards (Documentation, Deployment, Plugins, Development)
+  - Updated CSS for responsive design
+  - Custom "Get Started" and "Install SYNAPSE" buttons
+  - Removed HomepageFeatures component dependency
+- **Navigation Updates**
+  - Added "Plugins" navbar entry
+  - Removed "Blog" from navbar (blog disabled)
+  - Plugins sidebar with organized sections:
+    - Overview (2 pages)
+    - Official Plugins (5 pages)
+    - Community Plugins (2 pages)
+    - Official Bundles (2 pages)
+    - Community Bundles (1 page)
+    - Development (5 pages)
+
+### Fixed
+- Edit URL now correctly points to `https://github.com/FTMahringer/Synapse-docs/`
+- Blog configuration removed (was pointing to wrong repository)
+
+### Enhanced
+- concepts/plugins.md condensed to overview with link to full plugin documentation
+- Consistent Docusaurus admonitions throughout plugin docs
+- Professional documentation structure matching industry standards
+
+---
+
 ## [v0.0.3-dev] - 2026-05-10
 
 **Development version: Comprehensive deployment guides and production-ready configuration documentation.**

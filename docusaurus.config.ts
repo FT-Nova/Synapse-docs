@@ -47,21 +47,11 @@ const config: Config = {
       {
         docs: {
           sidebarPath: './sidebars.ts',
-          editUrl: 'https://github.com/FTMahringer/Synapse/tree/main/synapse-docs/',
+          editUrl: 'https://github.com/FTMahringer/Synapse-docs/tree/main/',
           showLastUpdateTime: true,
           showLastUpdateAuthor: true,
         },
-        blog: {
-          showReadingTime: true,
-          feedOptions: {
-            type: ['rss', 'atom'],
-            xslt: true,
-          },
-          editUrl: 'https://github.com/FTMahringer/Synapse/tree/main/synapse-docs/',
-          onInlineTags: 'warn',
-          onInlineAuthors: 'warn',
-          onUntruncatedBlogPosts: 'warn',
-        },
+        blog: false, // Blog disabled
         theme: {
           customCss: './src/css/custom.css',
         },
@@ -102,11 +92,16 @@ const config: Config = {
         },
         {
           type: 'docSidebar',
+          sidebarId: 'pluginsSidebar',
+          position: 'left',
+          label: 'Plugins',
+        },
+        {
+          type: 'docSidebar',
           sidebarId: 'deploymentSidebar',
           position: 'left',
           label: 'Deployment',
         },
-        {to: '/blog', label: 'Blog', position: 'left'},
         {
           type: 'docsVersionDropdown',
           position: 'right',

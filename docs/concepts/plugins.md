@@ -9,44 +9,34 @@ Plugins provide agents with:
 - **Integrations**: Connect to external services (GitHub, Slack, databases)
 - **Custom Logic**: Implement domain-specific behaviors
 
-## Plugin Architecture
+## Plugin Types
 
-```
-┌─────────────────────────────────────────┐
-│           Agent                         │
-└───────────────┬─────────────────────────┘
-                │
-                │ Request Tool
-                ▼
-┌─────────────────────────────────────────┐
-│      Plugin Manager                     │
-│  - Discovery                            │
-│  - Validation                           │
-│  - Execution                            │
-│  - Sandboxing                           │
-└───────────────┬─────────────────────────┘
-                │
-        ┌───────┴──────────┬──────────┐
-        ▼                  ▼          ▼
-┌────────────┐      ┌────────────┐  ┌────────────┐
-│   Plugin   │      │   Plugin   │  │   Plugin   │
-│  (Search)  │      │   (Files)  │  │  (Custom)  │
-└────────────┘      └────────────┘  └────────────┘
+- **Official Plugins**: Maintained by the SYNAPSE core team
+- **Community Plugins**: Created and maintained by the community
+- **Bundles**: Pre-configured collections of related plugins
+
+## Quick Example
+
+```python
+@plugin(name="weather", version="1.0.0")
+class WeatherPlugin:
+    @tool(description="Get current weather for a city")
+    def get_weather(self, city: str) -> dict:
+        # Implementation here
+        return {"city": city, "temp": 72, "condition": "sunny"}
 ```
 
-## Built-In Plugins
+:::tip Learn More
+For complete plugin documentation, development guides, and the plugin catalog, see the **[Plugins](/docs/plugins/overview)** section.
+:::
 
-### Web Search
-Search the internet for current information.
+## See Also
 
-### File Operations
-Read, write, and manage files.
+- [Plugin Architecture](/docs/plugins/architecture) - Technical details
+- [Create a Plugin](/docs/plugins/development/getting-started) - Development guide
+- [Official Plugins](/docs/plugins/official/overview) - Built-in plugins
+- [Plugin Bundles](/docs/plugins/bundles/official/overview) - Plugin collections
 
-### Code Execution
-Run code in sandboxed environments.
-
-### API Client
-Make HTTP requests to external APIs.
 
 ## Custom Plugin Development
 
