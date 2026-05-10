@@ -1,5 +1,99 @@
+---
+sidebar_position: 2
+---
+
 # REST API Reference
 
-Complete REST API documentation with examples.
+This page documents the core operational endpoints added/updated in the observability milestone (v2.1.1-dev through v2.1.4-dev).
 
-(Documentation in progress - will be completed in v2.0.4-dev)
+## Health Endpoints
+
+### `GET /api/health`
+
+High-level platform health response.
+
+Example response:
+
+```json
+{
+  "systemName": "SYNAPSE",
+  "version": "v2.1.4-dev",
+  "status": "UP",
+  "echoEnabled": true,
+  "echoDebugOnly": true,
+  "echoActivation": "manual",
+  "timestamp": "2026-05-10T20:00:00Z"
+}
+```
+
+### `GET /api/health/liveness`
+
+Liveness probe endpoint for platform/container health checks.
+
+Example response:
+
+```json
+{
+  "status": "UP",
+  "checks": {
+    "application": "UP"
+  },
+  "timestamp": "2026-05-10T20:00:00Z"
+}
+```
+
+### `GET /api/health/readiness`
+
+Readiness probe endpoint for dependency validation.
+
+Checks include:
+
+- database connectivity
+- redis connectivity
+- qdrant availability (optional via env toggle)
+- configured provider health
+
+Example response:
+
+```json
+{
+  "status": "UP",
+  "checks": {
+    "database": "UP",
+    "redis": "UP",
+    "qdrant": "UP",
+    "providers": "UP"
+  },
+  "timestamp": "2026-05-10T20:00:00Z"
+}
+```
+
+## Actuator Endpoints
+
+### `GET /actuator/health`
+
+Spring Boot actuator health endpoint with probe groups enabled.
+
+### `GET /actuator/prometheus`
+
+Prometheus metrics scrape endpoint.
+
+Use this with:
+
+- existing Prometheus in homelab/enterprise
+- bundled Prometheus in `docker-compose.monitoring.yml`
+
+## Trace Context
+
+SYNAPSE logging and events propagate the following context fields:
+
+- `traceId`
+- `spanId`
+- `correlationId`
+
+This allows request tracing across API logs and Redis event stream entries.
+
+## Notes
+
+- Health endpoints are designed for load balancers, orchestrators, and monitoring systems.
+- Detailed resource endpoints (`/api/agents`, `/api/tasks`, `/api/providers`, etc.) are documented in dedicated pages.

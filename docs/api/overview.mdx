@@ -1,5 +1,48 @@
+---
+sidebar_position: 1
+---
+
 # API Overview
 
-Complete API reference documentation.
+SYNAPSE exposes a REST API for core platform operations and an observability surface for health and metrics.
 
-(Documentation in progress - will be completed in v2.0.4-dev)
+## Base URL
+
+```text
+http://localhost:8080
+```
+
+In production, this is your deployed backend host (for example, `https://synapse.example.com`).
+
+## API Areas
+
+| Area | Path prefix | Purpose |
+|---|---|---|
+| Authentication | `/api/auth/*` | Login, register, token lifecycle |
+| Health | `/api/health*` | Service health and readiness/liveness probes |
+| Core resources | `/api/*` | Agents, conversations, tasks, users, providers, plugins |
+| Actuator | `/actuator/*` | Metrics and runtime endpoints |
+
+## Observability Endpoints
+
+| Endpoint | Description |
+|---|---|
+| `GET /api/health` | Main health response |
+| `GET /api/health/liveness` | Liveness probe |
+| `GET /api/health/readiness` | Readiness probe (db/redis/qdrant/providers) |
+| `GET /actuator/health` | Actuator health endpoint |
+| `GET /actuator/prometheus` | Prometheus metrics output |
+
+## Response Format
+
+Most endpoints return JSON. Error responses include correlation and trace context where available, so requests can be traced across logs and events.
+
+## Authentication
+
+Public endpoints include health and selected actuator paths. Protected endpoints require JWT authentication via the `Authorization: Bearer <token>` header.
+
+## Related Docs
+
+- [REST API Reference](./rest-api.mdx)
+- [WebSocket API](./websocket-api.mdx)
+- [Monitoring & Observability](../administration/monitoring.mdx)

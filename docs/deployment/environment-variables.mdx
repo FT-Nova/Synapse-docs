@@ -256,6 +256,36 @@ QDRANT_API_KEY=your_qdrant_api_key
 
 ---
 
+### QDRANT_URL
+
+**Description**: Full Qdrant base URL used by readiness health checks
+
+**Type**: URL
+
+**Default**: `http://localhost:6333`
+
+**Example**:
+```bash
+QDRANT_URL=http://qdrant:6333
+```
+
+---
+
+### QDRANT_HEALTH_ENABLED
+
+**Description**: Enable/disable Qdrant readiness check in `/api/health/readiness`
+
+**Type**: Boolean
+
+**Default**: `true`
+
+**Example**:
+```bash
+QDRANT_HEALTH_ENABLED=false
+```
+
+---
+
 ## Security Variables
 
 ### JWT_SECRET
@@ -413,6 +443,25 @@ LOGGING_LEVEL_ROOT=INFO
 ```
 
 **Values**: `TRACE`, `DEBUG`, `INFO`, `WARN`, `ERROR`
+
+---
+
+### MANAGEMENT_TRACING_SAMPLING_PROBABILITY
+
+**Description**: Trace sampling probability for distributed tracing
+
+**Type**: Decimal (0.0 - 1.0)
+
+**Default**: `1.0`
+
+**Example**:
+```bash
+MANAGEMENT_TRACING_SAMPLING_PROBABILITY=1.0
+```
+
+**Notes**:
+- `1.0` samples all requests
+- Lower values reduce trace volume in high-throughput deployments
 
 ---
 

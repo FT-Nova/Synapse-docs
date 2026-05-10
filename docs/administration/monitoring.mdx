@@ -228,11 +228,45 @@ management:
 
 ---
 
-## Roadmap
+## Tracing & Structured Logging
 
-| Version | Feature |
-|---------|---------|
-| v2.1.2-dev | Distributed tracing (OpenTelemetry + Jaeger/Tempo) |
-| v2.1.3-dev | Enhanced health checks (per-service, readiness/liveness) |
-| v2.1.4-dev | Structured JSON logging (Loki integration) |
-| v2.2.0 | Full observability release |
+SYNAPSE now includes:
+
+- Micrometer tracing bridge integration
+- trace context in logs (`traceId`, `spanId`, `correlationId`)
+- trace context propagated into event payloads (Redis stream fan-out)
+- JSON log output suitable for aggregation pipelines
+
+Example log fields:
+
+```json
+{
+  "level": "INFO",
+  "logger": "dev.synapse.core.SynapseApplication",
+  "traceId": "f3a4d30c7f4d8a64",
+  "spanId": "a31b5f09ec2f91d0",
+  "correlationId": "09e1a2fc-4ac1-4fc8-aa2e-5f4e3ed8a5ce"
+}
+```
+
+---
+
+## Probe Endpoints
+
+For runtime orchestration checks:
+
+- `GET /api/health/liveness`
+- `GET /api/health/readiness`
+
+Actuator probe groups are also enabled under `/actuator/health`.
+
+---
+
+## Roadmap Status
+
+| Version | Status | Feature |
+|---------|--------|---------|
+| v2.1.2-dev | ✅ Complete | Distributed tracing context propagation |
+| v2.1.3-dev | ✅ Complete | Enhanced health checks (readiness/liveness) |
+| v2.1.4-dev | ✅ Complete | Structured JSON logging |
+| v2.2.0 | 🔄 In progress | Observability milestone release |
