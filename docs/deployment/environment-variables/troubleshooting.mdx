@@ -1,0 +1,36 @@
+---
+title: Environment Variable Troubleshooting
+---
+
+# Environment Variable Troubleshooting
+
+### Environment Not Loading
+
+```bash
+# Check if .env file exists
+ls -la .env
+
+# Verify Docker Compose loads .env
+docker-compose config
+
+# Check environment in running container
+docker-compose exec backend env | grep SYNAPSE
+```
+
+### Secret Too Short
+
+```
+Error: JWT_SECRET must be at least 256 bits
+```
+
+**Solution**: Generate proper secret:
+```bash
+openssl rand -base64 32
+```
+
+### Variable Not Applied
+
+1. Restart services after changing `.env`
+2. Check for typos in variable names
+3. Verify no spaces around `=` in `.env`
+

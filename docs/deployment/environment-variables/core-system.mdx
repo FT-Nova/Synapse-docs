@@ -1,0 +1,93 @@
+---
+title: Core System Variables
+---
+
+# Core System Variables
+
+### SYSTEM_NAME
+
+**Description**: Display name for your SYNAPSE instance
+
+**Type**: String
+
+**Default**: `SYNAPSE`
+
+**Example**:
+```bash
+SYSTEM_NAME="My AI Platform"
+```
+
+**Used in**: Dashboard header, logs, notifications
+
+---
+
+### DASHBOARD_DEFAULT_USERNAME
+
+**Description**: Default seeded dashboard username shown in installation defaults
+
+**Type**: String
+
+**Default**: `admin`
+
+**Example**:
+```bash
+DASHBOARD_DEFAULT_USERNAME=admin
+```
+
+**Notes**: Current seed migration creates `admin` as the initial owner account.
+
+---
+
+### DASHBOARD_DEFAULT_PASSWORD
+
+**Description**: Default seeded dashboard password shown in installation defaults
+
+**Type**: String (bootstrap credential)
+
+**Default**: `admin`
+
+**Example**:
+```bash
+DASHBOARD_DEFAULT_PASSWORD=admin
+```
+
+:::danger First Login Requirement
+Change this password immediately after first login.
+:::
+
+**Notes**: Current seed migration uses `admin` for the initial owner account password.
+
+---
+
+### SYNAPSE_VERSION
+
+**Description**: Version tag for tracking deployments
+
+**Type**: String (semver)
+
+**Default**: Application build version (`spring.application.version`)
+
+**Example**:
+```bash
+SYNAPSE_VERSION=v2.4.0
+```
+
+**Used in**: System metadata, API responses, logs
+
+---
+
+### SERVER_PORT
+
+**Description**: Port for backend API server
+
+**Type**: Integer
+
+**Default**: `8080`
+
+**Example**:
+```bash
+SERVER_PORT=8080
+```
+
+**Range**: 1024-65535
+

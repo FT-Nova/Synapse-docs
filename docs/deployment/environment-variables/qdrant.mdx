@@ -1,0 +1,79 @@
+---
+title: Qdrant Variables
+---
+
+# Qdrant Variables
+
+### QDRANT_HOST
+
+**Description**: Qdrant server hostname
+
+**Type**: String
+
+**Default**: `localhost`
+
+**Example**:
+```bash
+QDRANT_HOST=qdrant
+```
+
+---
+
+### QDRANT_PORT
+
+**Description**: Qdrant gRPC port
+
+**Type**: Integer
+
+**Default**: `6334`
+
+**Example**:
+```bash
+QDRANT_PORT=6334
+```
+
+---
+
+### QDRANT_API_KEY
+
+**Description**: Qdrant API authentication key
+
+**Type**: String (secret)
+
+**Required**: Only if Qdrant auth enabled
+
+**Example**:
+```bash
+QDRANT_API_KEY=your_qdrant_api_key
+```
+
+---
+
+### QDRANT_URL
+
+**Description**: Full Qdrant base URL used by readiness health checks
+
+**Type**: URL
+
+**Default**: `http://localhost:6333`
+
+**Example**:
+```bash
+QDRANT_URL=http://qdrant:6333
+```
+
+---
+
+### QDRANT_HEALTH_ENABLED
+
+**Description**: Enable/disable Qdrant readiness check in `/api/health/readiness`
+
+**Type**: Boolean
+
+**Default**: `true`
+
+**Example**:
+```bash
+QDRANT_HEALTH_ENABLED=false
+```
+

@@ -1,0 +1,70 @@
+---
+title: Model Providers + Profiles
+---
+
+# Model Providers + Profiles
+
+### OPENAI_API_KEY
+
+**Description**: OpenAI API key
+
+**Type**: String (secret)
+
+**Required**: Only if using OpenAI models
+
+**Example**:
+```bash
+OPENAI_API_KEY=sk-proj-...
+```
+
+---
+
+### ANTHROPIC_API_KEY
+
+**Description**: Anthropic API key
+
+**Type**: String (secret)
+
+**Required**: Only if using Anthropic models
+
+**Example**:
+```bash
+ANTHROPIC_API_KEY=sk-ant-...
+```
+
+---
+
+### OLLAMA_BASE_URL
+
+**Description**: Ollama server URL
+
+**Type**: URL
+
+**Default**: `http://localhost:11434`
+
+**Example**:
+```bash
+OLLAMA_BASE_URL=http://ollama:11434
+```
+
+---
+
+### SPRING_PROFILES_ACTIVE
+
+**Description**: Active Spring profiles
+
+**Type**: Comma-separated strings
+
+**Default**: `default`
+
+**Example**:
+```bash
+SPRING_PROFILES_ACTIVE=production,monitoring
+```
+
+**Common profiles**:
+- `development`: Development mode
+- `production`: Production mode
+- `monitoring`: Enable metrics
+- `local-models`: Enable Ollama
+

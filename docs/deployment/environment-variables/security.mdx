@@ -1,0 +1,77 @@
+---
+title: Security Variables
+---
+
+# Security Variables
+
+### JWT_SECRET
+
+**Description**: Secret key for JWT token signing
+
+**Type**: String (secret, min 256 bits)
+
+**Required**: **YES** (production)
+
+**Example**:
+```bash
+JWT_SECRET=your_256_bit_secret_key_here
+```
+
+**Generate**:
+```bash
+openssl rand -base64 32
+```
+
+:::danger Critical Security
+- **Never** commit to version control
+- **Must** be at least 256 bits (32 bytes)
+- **Change** immediately if compromised
+- **Rotate** periodically (requires re-issuing all tokens)
+:::
+
+---
+
+### SECRETS_ENCRYPTION_KEY
+
+**Description**: Key for encrypting sensitive data at rest
+
+**Type**: String (secret, 32 bytes hex)
+
+**Required**: **YES** (production)
+
+**Example**:
+```bash
+SECRETS_ENCRYPTION_KEY=0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef
+```
+
+**Generate**:
+```bash
+openssl rand -hex 32
+```
+
+:::warning Encryption Key
+- Used to encrypt API keys, passwords, tokens stored in database
+- **Cannot** be changed without re-encrypting all secrets
+- **Must** be backed up securely
+- Loss = permanent data loss
+:::
+
+---
+
+### CORS_ALLOWED_ORIGINS
+
+**Description**: Allowed CORS origins for API
+
+**Type**: Comma-separated URLs
+
+**Default**: `*` (development only!)
+
+**Example**:
+```bash
+CORS_ALLOWED_ORIGINS=https://app.example.com,https://admin.example.com
+```
+
+:::tip Production Security
+Always specify explicit origins in production. Never use `*`.
+:::
+

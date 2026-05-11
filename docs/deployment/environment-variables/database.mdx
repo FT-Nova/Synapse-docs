@@ -1,0 +1,88 @@
+---
+title: Database Variables
+---
+
+# Database Variables
+
+### SPRING_DATASOURCE_URL
+
+**Description**: PostgreSQL connection URL
+
+**Type**: JDBC URL
+
+**Required**: Yes
+
+**Example**:
+```bash
+SPRING_DATASOURCE_URL=jdbc:postgresql://localhost:5432/synapse
+```
+
+**Format**:
+```
+jdbc:postgresql://<host>:<port>/<database>
+```
+
+---
+
+### SPRING_DATASOURCE_USERNAME
+
+**Description**: PostgreSQL username
+
+**Type**: String
+
+**Required**: Yes
+
+**Example**:
+```bash
+SPRING_DATASOURCE_USERNAME=synapse
+```
+
+---
+
+### SPRING_DATASOURCE_PASSWORD
+
+**Description**: PostgreSQL password
+
+**Type**: String (secret)
+
+**Required**: Yes
+
+**Example**:
+```bash
+SPRING_DATASOURCE_PASSWORD=your_secure_password
+```
+
+:::danger Production Requirement
+Use a strong, randomly generated password in production.
+:::
+
+---
+
+### POSTGRES_DB
+
+**Description**: PostgreSQL database name (Docker Compose only)
+
+**Type**: String
+
+**Default**: `synapse`
+
+**Example**:
+```bash
+POSTGRES_DB=synapse
+```
+
+---
+
+### POSTGRES_USER
+
+**Description**: PostgreSQL user (Docker Compose only)
+
+**Type**: String
+
+**Default**: `synapse`
+
+**Example**:
+```bash
+POSTGRES_USER=synapse
+```
+

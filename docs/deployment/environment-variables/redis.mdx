@@ -1,0 +1,66 @@
+---
+title: Redis Variables
+---
+
+# Redis Variables
+
+### REDIS_HOST
+
+**Description**: Redis server hostname
+
+**Type**: String
+
+**Default**: `localhost`
+
+**Example**:
+```bash
+REDIS_HOST=redis
+```
+
+---
+
+### REDIS_PORT
+
+**Description**: Redis server port
+
+**Type**: Integer
+
+**Default**: `6379`
+
+**Example**:
+```bash
+REDIS_PORT=6379
+```
+
+---
+
+### REDIS_PASSWORD
+
+**Description**: Redis authentication password
+
+**Type**: String (secret)
+
+**Required**: Only if Redis auth enabled
+
+**Example**:
+```bash
+REDIS_PASSWORD=your_redis_password
+```
+
+---
+
+### REDIS_DATABASE
+
+**Description**: Redis database number
+
+**Type**: Integer
+
+**Default**: `0`
+
+**Example**:
+```bash
+REDIS_DATABASE=0
+```
+
+**Range**: 0-15
+

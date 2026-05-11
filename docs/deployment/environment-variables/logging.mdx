@@ -1,0 +1,70 @@
+---
+title: Logging Variables
+---
+
+# Logging Variables
+
+### LOGGING_LEVEL_ROOT
+
+**Description**: Root logging level
+
+**Type**: Log level
+
+**Default**: `INFO`
+
+**Example**:
+```bash
+LOGGING_LEVEL_ROOT=INFO
+```
+
+**Values**: `TRACE`, `DEBUG`, `INFO`, `WARN`, `ERROR`
+
+---
+
+### MANAGEMENT_TRACING_SAMPLING_PROBABILITY
+
+**Description**: Trace sampling probability for distributed tracing
+
+**Type**: Decimal (0.0 - 1.0)
+
+**Default**: `1.0`
+
+**Example**:
+```bash
+MANAGEMENT_TRACING_SAMPLING_PROBABILITY=1.0
+```
+
+**Notes**:
+- `1.0` samples all requests
+- Lower values reduce trace volume in high-throughput deployments
+
+---
+
+### LOGGING_LEVEL_DEV_SYNAPSE
+
+**Description**: SYNAPSE application logging level
+
+**Type**: Log level
+
+**Default**: `INFO`
+
+**Example**:
+```bash
+LOGGING_LEVEL_DEV_SYNAPSE=DEBUG
+```
+
+---
+
+### LOGGING_FILE_NAME
+
+**Description**: Log file path
+
+**Type**: Filesystem path
+
+**Default**: Not set (console only)
+
+**Example**:
+```bash
+LOGGING_FILE_NAME=/var/log/synapse/application.log
+```
+

@@ -1,0 +1,66 @@
+---
+title: Agent + Store Variables
+---
+
+# Agent + Store Variables
+
+### SYNAPSE_AGENTS_PATH
+
+**Description**: Path to agents directory
+
+**Type**: Filesystem path
+
+**Default**: `/app/agents` (Docker), `./agents` (bare-metal)
+
+**Example**:
+```bash
+SYNAPSE_AGENTS_PATH=/opt/synapse/agents
+```
+
+---
+
+### ECHO_ENABLED
+
+**Description**: Enable ECHO debug agent
+
+**Type**: Boolean
+
+**Default**: `true` (development), `false` (production)
+
+**Example**:
+```bash
+ECHO_ENABLED=false
+```
+
+**Purpose**: ECHO is a diagnostic agent for testing.
+
+---
+
+### SYNAPSE_STORE_REGISTRY_PATH
+
+**Description**: Path to store registry file
+
+**Type**: Filesystem path
+
+**Default**: `/app/store/registry.yml`
+
+**Example**:
+```bash
+SYNAPSE_STORE_REGISTRY_PATH=/opt/synapse/store/registry.yml
+```
+
+---
+
+### SYNAPSE_STORE_ENABLED
+
+**Description**: Enable plugin store functionality
+
+**Type**: Boolean
+
+**Default**: `true`
+
+**Example**:
+```bash
+SYNAPSE_STORE_ENABLED=true
+```
+
