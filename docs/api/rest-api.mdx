@@ -1,19 +1,23 @@
 ---
 sidebar_position: 2
-title: REST API (OpenAPI)
+title: REST API (Core)
 ---
 
 import Head from '@docusaurus/Head';
-import useBaseUrl from '@docusaurus/useBaseUrl';
+import SwaggerReadonly from '@site/src/components/SwaggerReadonly';
 
-# REST API (OpenAPI)
+# REST API (Core)
 
-This page renders the OpenAPI contract directly in a single reference view.
+This page renders the core platform OpenAPI contract in a read-only Swagger reference view.
 
-Open raw spec: <a href={useBaseUrl('/openapi/synapse-rest-api.yaml')}>{useBaseUrl('/openapi/synapse-rest-api.yaml')}</a>
+Open raw spec: <a href="/openapi/core-api.yaml">/openapi/core-api.yaml</a>
 
 <Head>
-  <script src="https://cdn.redoc.ly/redoc/latest/bundles/redoc.standalone.js"></script>
+  <link rel="stylesheet" href="/swagger/swagger-ui.css" />
+  <script src="/swagger/swagger-ui-bundle.js"></script>
+  <script src="/swagger/swagger-ui-standalone-preset.js"></script>
 </Head>
 
-<redoc spec-url={useBaseUrl('/openapi/synapse-rest-api.yaml')}></redoc>
+<div className="api-reference-page">
+  <SwaggerReadonly specPath="/openapi/core-api.yaml" />
+</div>

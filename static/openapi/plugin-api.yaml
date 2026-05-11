@@ -1,0 +1,315 @@
+openapi: 3.0.3
+info:
+  title: SYNAPSE Plugin API
+  version: v2.4.0
+  description: Plugin lifecycle, safety assessment, and plugin runtime statistics APIs.
+servers:
+  - url: /
+tags:
+  - name: Plugin Management
+  - name: Plugin Safety
+  - name: Plugin Stats
+paths:
+  /api/plugins:
+    get:
+      tags: [Plugin Management]
+      summary: List installed plugins
+      operationId: listPlugins
+      parameters:
+        - in: query
+          name: page
+          schema: {type: integer, minimum: 0, default: 0}
+        - in: query
+          name: size
+          schema: {type: integer, minimum: 1, maximum: 200, default: 50}
+      responses:
+        '200':
+          description: Installed plugins page
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Plugin'
+              examples:
+                success:
+                  value:
+                    - id: web-search
+                      name: Web Search
+                      type: OFFICIAL
+                      version: 1.3.0
+                      status: ENABLED
+                      createdAt: '2026-05-01T09:30:00Z'
+                    - id: weather-community
+                      name: Weather Community
+                      type: COMMUNITY
+                      version: 0.9.4
+                      status: DISABLED
+                      createdAt: '2026-05-08T10:10:00Z'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /api/plugins/{id}:
+    get:
+      tags: [Plugin Management]
+      summary: Get installed plugin details
+      operationId: getPlugin
+      parameters:
+        - $ref: '#/components/parameters/pluginId'
+      responses:
+        '200':
+          description: Plugin details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Plugin'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    delete:
+      tags: [Plugin Management]
+      summary: Uninstall plugin
+      operationId: uninstallPlugin
+      parameters:
+        - $ref: '#/components/parameters/pluginId'
+      responses:
+        '204':
+          description: Plugin uninstalled
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /api/plugins/install:
+    post:
+      tags: [Plugin Management]
+      summary: Install plugin from manifest
+      operationId: installPlugin
+      parameters:
+        - in: query
+          name: confirmed
+          schema: {type: boolean, default: false}
+          description: Must be true when safety policy requires explicit confirmation.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InstallManifest'
+            examples:
+              marketplace:
+                value:
+                  source: marketplace
+                  pluginId: weather-plugin
+                  version: 1.0.0
+      responses:
+        '201':
+          description: Plugin installed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Plugin'
+              examples:
+                installed:
+                  value:
+                    id: weather-plugin
+                    name: Weather Plugin
+                    type: COMMUNITY
+                    version: 1.0.0
+                    status: ENABLED
+                    manifest:
+                      permissions: [network.http]
+                    createdAt: '2026-05-11T19:30:00Z'
+        '403':
+          description: Confirmation required by safety policy
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                confirmationRequired:
+                  value:
+                    code: PLUGIN_CONFIRMATION_REQUIRED
+                    message: Community plugin install requires confirmed=true.
+                    timestamp: '2026-05-11T19:31:00Z'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+  /api/plugins/install/assess:
+    post:
+      tags: [Plugin Safety]
+      summary: Assess plugin install safety policy
+      operationId: assessInstall
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InstallManifest'
+      responses:
+        '200':
+          description: Safety assessment result
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PluginSafetyPolicy'
+              examples:
+                community:
+                  value:
+                    trustLevel: COMMUNITY
+                    requiresConfirmation: true
+                    warnings:
+                      - This plugin is from a community source and has not been verified.
+                      - Pass confirmed=true to proceed.
+  /api/plugins/{id}/enable:
+    post:
+      tags: [Plugin Management]
+      summary: Enable plugin
+      operationId: enablePlugin
+      parameters:
+        - $ref: '#/components/parameters/pluginId'
+      responses:
+        '200':
+          description: Plugin enabled
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Plugin'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /api/plugins/{id}/disable:
+    post:
+      tags: [Plugin Management]
+      summary: Disable plugin
+      operationId: disablePlugin
+      parameters:
+        - $ref: '#/components/parameters/pluginId'
+      responses:
+        '200':
+          description: Plugin disabled
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Plugin'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /api/plugins/stats:
+    get:
+      tags: [Plugin Stats]
+      summary: List plugin operational stats
+      operationId: listPluginStats
+      responses:
+        '200':
+          description: Plugin operational stats
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PluginStats'
+  /api/plugins/{id}/stats:
+    get:
+      tags: [Plugin Stats]
+      summary: Get one plugin operational stat record
+      operationId: getPluginStats
+      parameters:
+        - $ref: '#/components/parameters/pluginId'
+      responses:
+        '200':
+          description: Plugin operational stats
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PluginStats'
+              examples:
+                success:
+                  value:
+                    pluginId: web-search
+                    installCount: 12
+                    enableCount: 33
+                    disableCount: 3
+                    lastUsedAt: '2026-05-11T18:50:00Z'
+                    updatedAt: '2026-05-11T19:00:00Z'
+        '404':
+          $ref: '#/components/responses/NotFound'
+components:
+  parameters:
+    pluginId:
+      name: id
+      in: path
+      required: true
+      schema: {type: string}
+  responses:
+    Unauthorized:
+      description: Missing or invalid authentication token.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          examples:
+            missingToken:
+              value:
+                code: AUTH_REQUIRED
+                message: Bearer token is required.
+                timestamp: '2026-05-11T19:01:00Z'
+    ValidationError:
+      description: Validation failed for plugin request payload.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          examples:
+            invalidManifest:
+              value:
+                code: VALIDATION_ERROR
+                message: Manifest field `name` is required.
+                timestamp: '2026-05-11T19:31:00Z'
+    NotFound:
+      description: Plugin record was not found.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          examples:
+            pluginMissing:
+              value:
+                code: PLUGIN_NOT_FOUND
+                message: Plugin `missing-plugin` does not exist.
+                timestamp: '2026-05-11T19:31:00Z'
+  schemas:
+    ErrorResponse:
+      type: object
+      required: [code, message, timestamp]
+      properties:
+        code: {type: string}
+        message: {type: string}
+        timestamp: {type: string, format: date-time}
+    InstallManifest:
+      type: object
+      additionalProperties: true
+      description: Raw manifest payload accepted by the plugin lifecycle API.
+    Plugin:
+      type: object
+      properties:
+        id: {type: string}
+        name: {type: string}
+        type: {type: string}
+        version: {type: string}
+        status: {type: string}
+        manifest:
+          type: object
+          additionalProperties: true
+        createdAt: {type: string, format: date-time}
+    PluginSafetyPolicy:
+      type: object
+      properties:
+        trustLevel:
+          type: string
+          enum: [VERIFIED, COMMUNITY, UNVERIFIED]
+        requiresConfirmation: {type: boolean}
+        warnings:
+          type: array
+          items: {type: string}
+    PluginStats:
+      type: object
+      properties:
+        pluginId: {type: string}
+        installCount: {type: integer, format: int64}
+        enableCount: {type: integer, format: int64}
+        disableCount: {type: integer, format: int64}
+        lastUsedAt: {type: string, format: date-time, nullable: true}
+        updatedAt: {type: string, format: date-time}
