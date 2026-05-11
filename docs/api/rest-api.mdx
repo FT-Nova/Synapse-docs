@@ -232,6 +232,84 @@ Body:
 }
 ```
 
+## Agent Planning Endpoints
+
+Base path: `/api/teams/{teamId}/planning`
+
+### `GET /goals`
+
+List planning goals for a team.
+
+### `POST /goals`
+
+Create a planning goal.
+
+Body:
+
+```json
+{
+  "collaborationSessionId": "7ad8c0bd-7166-418e-bf4b-8fb4f37f5fef",
+  "title": "v2.4.0 delivery",
+  "goalStatement": "Deliver roadmap milestones with minimal token cost",
+  "createdByAgentId": "main-agent"
+}
+```
+
+### `GET /goals/{goalId}`
+
+Get one planning goal.
+
+### `GET /goals/{goalId}/plans`
+
+List plan versions for a goal (newest first).
+
+### `POST /goals/{goalId}/plans`
+
+Create the initial plan artifact.
+
+Body:
+
+```json
+{
+  "compactSummary": "Three-step plan focused on collaboration, validation, and release",
+  "steps": [
+    { "id": "s1", "title": "Implement feature", "status": "PENDING" },
+    { "id": "s2", "title": "Validate behavior", "status": "PENDING" },
+    { "id": "s3", "title": "Ship release", "status": "PENDING" }
+  ],
+  "reasoningChain": [
+    { "summary": "Prioritize implementation first to unblock test and release phases" }
+  ],
+  "createdByAgentId": "main-agent"
+}
+```
+
+### `POST /goals/{goalId}/plans/refine`
+
+Refine/adapt an existing plan and create a new version.
+
+Body:
+
+```json
+{
+  "basePlanId": "0e08f368-b73e-4f73-8826-8f1ed0cd39f5",
+  "compactSummary": "Updated plan after risk review",
+  "steps": [
+    { "id": "s1", "title": "Implement feature", "status": "DONE" },
+    { "id": "s2", "title": "Validate behavior", "status": "IN_PROGRESS" },
+    { "id": "s3", "title": "Ship release", "status": "PENDING" }
+  ],
+  "reasoningChain": [
+    { "summary": "Adapted order to close discovered regression before release" }
+  ],
+  "createdByAgentId": "main-agent"
+}
+```
+
+### `GET /goals/{goalId}/next-step`
+
+Return the next non-`DONE` step from the active plan version.
+
 ## Notes
 
 - Health endpoints are designed for load balancers, orchestrators, and monitoring systems.

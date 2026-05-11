@@ -115,6 +115,33 @@ GET    /sessions/{sessionId}/context
 PUT    /sessions/{sessionId}/context/{contextKey}
 ```
 
+## Planning & Reasoning API (v2.3.5-dev)
+
+To reduce token usage, teams can persist compact planning artifacts and reuse them instead of regenerating full plans each turn.
+
+- Goals define the high-level objective for a team
+- Plan artifacts store versioned steps + compact reasoning chain snapshots
+- Plan refinement creates a new version and supersedes the prior one
+- Next-step retrieval returns the next actionable step from the active plan
+
+Base endpoint:
+
+```bash
+/api/teams/{teamId}/planning
+```
+
+Core routes:
+
+```bash
+GET    /goals
+POST   /goals
+GET    /goals/{goalId}
+GET    /goals/{goalId}/plans
+POST   /goals/{goalId}/plans
+POST   /goals/{goalId}/plans/refine
+GET    /goals/{goalId}/next-step
+```
+
 ## Use Cases
 
 ### Software Development
