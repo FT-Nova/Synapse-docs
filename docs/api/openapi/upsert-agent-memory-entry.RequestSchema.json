@@ -1,1 +1,0 @@
-{"title":"Body","body":{"required":true,"content":{"application/json":{"schema":{"type":"object","required":["value"],"properties":{"key":{"type":"string"},"value":{"type":"string"},"namespace":{"type":"string"}},"title":"MemoryEntryUpsertRequest"}}}}}

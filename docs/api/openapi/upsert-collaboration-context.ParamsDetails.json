@@ -1,1 +1,0 @@
-{"parameters":[{"name":"teamId","in":"path","required":true,"schema":{"type":"string"}},{"name":"sessionId","in":"path","required":true,"schema":{"type":"string"}},{"name":"contextKey","in":"path","required":true,"schema":{"type":"string"}}]}

@@ -1,10 +1,18 @@
 ---
-sidebar_position: 99
-title: REST API Reference (Legacy Page)
+sidebar_position: 2
+title: REST API (OpenAPI)
 ---
 
-# REST API Reference
+import Head from '@docusaurus/Head';
 
-This legacy page has been replaced by generated OpenAPI docs.
+# REST API (OpenAPI)
 
-Go to: [REST API (OpenAPI)](/docs/api/openapi-intro)
+This page renders the OpenAPI contract directly in a single reference view.
+
+Open raw spec: [`/openapi/synapse-rest-api.yaml`](/openapi/synapse-rest-api.yaml)
+
+<Head>
+  <script src="https://cdn.redoc.ly/redoc/latest/bundles/redoc.standalone.js"></script>
+</Head>
+
+<redoc spec-url="/openapi/synapse-rest-api.yaml"></redoc>

@@ -1,1 +1,0 @@
-{"title":"Body","body":{"required":true,"content":{"application/json":{"schema":{"type":"object","required":["agentId","input"],"properties":{"agentId":{"type":"string"},"teamId":{"type":"string"},"collaborationSessionId":{"type":"string"},"goalId":{"type":"string"},"input":{"type":"object","additionalProperties":true}},"title":"ToolExecutionRequest"}}}}}
