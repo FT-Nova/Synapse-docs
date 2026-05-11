@@ -78,12 +78,41 @@ Teams maintain shared memory:
 - Common conversation history
 - Shared knowledge base
 - Task status and progress
+- Session-scoped collaboration context keys with versioned updates
 
 ### Task Delegation
 Agents can delegate subtasks to teammates:
 ```
 PM Agent: "Dev Agent, implement the login API"
 Dev Agent: "QA Agent, test the login API endpoint"
+```
+
+## Collaboration Session API (v2.3.4-dev)
+
+Team collaboration now has a dedicated, persistent session model:
+
+- **Inter-agent messages** with typed protocol (`DIRECTIVE`, `CONTEXT`, `STATUS`, `RESULT`)
+- **Delegation records** for task handoff between team members
+- **Shared context entries** for synchronized team state
+
+Base endpoint:
+
+```bash
+/api/teams/{teamId}/collaboration
+```
+
+Core routes:
+
+```bash
+GET    /sessions
+POST   /sessions
+GET    /sessions/{sessionId}
+GET    /sessions/{sessionId}/messages
+POST   /sessions/{sessionId}/messages
+GET    /sessions/{sessionId}/delegations
+POST   /sessions/{sessionId}/delegations
+GET    /sessions/{sessionId}/context
+PUT    /sessions/{sessionId}/context/{contextKey}
 ```
 
 ## Use Cases

@@ -4,7 +4,7 @@ sidebar_position: 2
 
 # REST API Reference
 
-This page documents core operational endpoints, including observability and memory-tier APIs.
+This page documents core operational endpoints, including observability, memory-tier APIs, and agent collaboration APIs.
 
 ## Health Endpoints
 
@@ -142,6 +142,95 @@ Allowed transitions:
 ### `DELETE /api/agents/{agentId}/memory/{key}`
 
 Delete a memory entry by key.
+
+## Agent Collaboration Endpoints
+
+Base path: `/api/teams/{teamId}/collaboration`
+
+### `GET /sessions`
+
+List collaboration sessions for a team.
+
+### `POST /sessions`
+
+Create a new active collaboration session.
+
+Body:
+
+```json
+{
+  "initiatedByAgentId": "main-agent",
+  "conversationId": "b4de5a2f-8cc9-4acd-9be8-3efa6bcddaca"
+}
+```
+
+### `GET /sessions/{sessionId}`
+
+Get one session by ID (team-scoped).
+
+### `GET /sessions/{sessionId}/messages`
+
+List inter-agent messages in chronological order.
+
+### `POST /sessions/{sessionId}/messages`
+
+Send a typed inter-agent collaboration message.
+
+Body:
+
+```json
+{
+  "fromAgentId": "main-agent",
+  "toAgentId": "worker-agent",
+  "messageType": "DIRECTIVE",
+  "content": "Handle task decomposition for milestone v2.4.0",
+  "metadata": {
+    "priority": "high"
+  }
+}
+```
+
+Message types:
+- `DIRECTIVE`
+- `CONTEXT`
+- `STATUS`
+- `RESULT`
+
+### `GET /sessions/{sessionId}/delegations`
+
+List task delegation records for a session.
+
+### `POST /sessions/{sessionId}/delegations`
+
+Create a delegation from one team member to another.
+
+Body:
+
+```json
+{
+  "taskId": "ec4d1d99-156f-4678-8078-710cb2f28361",
+  "fromAgentId": "main-agent",
+  "toAgentId": "worker-agent",
+  "delegationNote": "Implement collaboration routing"
+}
+```
+
+### `GET /sessions/{sessionId}/context`
+
+List shared context entries for a collaboration session.
+
+### `PUT /sessions/{sessionId}/context/{contextKey}`
+
+Create/update a shared context key (version increments on update).
+
+Body:
+
+```json
+{
+  "value": "routing implemented, tests pending",
+  "updatedByAgentId": "worker-agent"
+}
+```
 
 ## Notes
 
