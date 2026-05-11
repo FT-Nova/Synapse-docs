@@ -4,15 +4,16 @@ title: REST API (OpenAPI)
 ---
 
 import Head from '@docusaurus/Head';
+import useBaseUrl from '@docusaurus/useBaseUrl';
 
 # REST API (OpenAPI)
 
 This page renders the OpenAPI contract directly in a single reference view.
 
-Open raw spec: [`/openapi/synapse-rest-api.yaml`](/openapi/synapse-rest-api.yaml)
+Open raw spec: <a href={useBaseUrl('/openapi/synapse-rest-api.yaml')}>{useBaseUrl('/openapi/synapse-rest-api.yaml')}</a>
 
 <Head>
   <script src="https://cdn.redoc.ly/redoc/latest/bundles/redoc.standalone.js"></script>
 </Head>
 
-<redoc spec-url="/openapi/synapse-rest-api.yaml"></redoc>
+<redoc spec-url={useBaseUrl('/openapi/synapse-rest-api.yaml')}></redoc>
