@@ -125,6 +125,7 @@ const sidebars: SidebarsConfig = {
         "deployment/docker-compose",
         "deployment/bare-metal",
         "deployment/kubernetes",
+        "deployment/troubleshooting",
         {
           type: "category",
           label: "Environment Variables",
@@ -146,7 +147,6 @@ const sidebars: SidebarsConfig = {
         },
         "deployment/reverse-proxy",
         "deployment/backup-restore",
-        "deployment/troubleshooting",
       ],
     },
     {

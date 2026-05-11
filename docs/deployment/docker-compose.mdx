@@ -6,6 +6,10 @@ Deploy SYNAPSE with Docker Compose for development and production environments.
 Docker Compose is the **recommended deployment method** for most SYNAPSE installations. It's simple, reliable, and production-ready.
 :::
 
+:::note Prefer the installer scripts for defaults
+If you want a guided default setup, use `install.sh` (Linux/macOS) or `install.ps1` (Windows). This page is best when you need advanced Docker Compose customization and production tuning.
+:::
+
 ## Overview
 
 SYNAPSE Docker Compose deployment includes:
@@ -453,3 +457,9 @@ Internet
                     ├─→ Redis (single or Sentinel)
                     └─→ Qdrant (single or cluster)
 ```
+
+## Related guides
+
+- [Bare-Metal Installation](./bare-metal.mdx)
+- [Kubernetes Deployment](./kubernetes.mdx)
+- [Deployment Troubleshooting](./troubleshooting.mdx)
