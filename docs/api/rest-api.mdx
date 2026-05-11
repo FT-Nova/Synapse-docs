@@ -351,6 +351,25 @@ Current built-ins:
 - `tool_registry_inspect`
 - `plugin_contract_validate`
 
+Tool execution responses include hardening metadata:
+
+- `hardeningReasonCode` (`OK`, budget/rule reason code, etc.)
+- `enforcedMode` (for example `CONCISE` when token pressure mode is activated)
+
+## Hardening Policy Behavior (v2.3.7-dev)
+
+Hardening decisions are evaluated centrally and applied consistently across:
+
+- collaboration task delegation
+- planning artifact creation/refinement
+- native tool execution token budgets
+
+Decision outcomes:
+
+- `ALLOW` - action proceeds normally
+- `WARN` - action proceeds with enforced mode (for example concise output mode)
+- `BLOCK` - action is rejected with policy reason code
+
 ## Notes
 
 - Health endpoints are designed for load balancers, orchestrators, and monitoring systems.

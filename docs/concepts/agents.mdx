@@ -57,6 +57,16 @@ Initial built-ins:
 - `tool_registry_inspect` (tool discovery metadata)
 - `plugin_contract_validate` (plugin manifest contract validation)
 
+### Central Hardening Policies (v2.3.7-dev)
+
+Agent operations are now guarded by a shared hardening policy engine:
+
+- delegation loop/hop protection for team collaboration
+- planning step/refinement caps to avoid runaway plan expansion
+- token-budget tracking with concise-mode enforcement near limits
+
+This ensures delegation, planning, and runtime tool behavior follow one policy system instead of disconnected checks.
+
 ## Memory and Context
 
 Agents maintain:

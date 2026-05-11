@@ -742,6 +742,156 @@ SYNAPSE_TOOLS_CACHE_DEFAULT_TTL_SECONDS=300
 
 ---
 
+### SYNAPSE_HARDENING_ENABLED
+
+**Description**: Enable central hardening policy evaluation across collaboration, planning, and tool execution
+
+**Type**: Boolean
+
+**Default**: `true`
+
+**Example**:
+```bash
+SYNAPSE_HARDENING_ENABLED=true
+```
+
+---
+
+### SYNAPSE_HARDENING_DELEGATION_MAX_HOPS
+
+**Description**: Maximum allowed delegation chain depth before delegation is blocked
+
+**Type**: Integer
+
+**Default**: `6`
+
+**Example**:
+```bash
+SYNAPSE_HARDENING_DELEGATION_MAX_HOPS=6
+```
+
+---
+
+### SYNAPSE_HARDENING_PLANNING_MAX_STEPS
+
+**Description**: Maximum number of steps allowed in a single planning artifact
+
+**Type**: Integer
+
+**Default**: `20`
+
+**Example**:
+```bash
+SYNAPSE_HARDENING_PLANNING_MAX_STEPS=20
+```
+
+---
+
+### SYNAPSE_HARDENING_PLANNING_MAX_REFINEMENTS
+
+**Description**: Maximum plan refinement versions allowed per planning goal
+
+**Type**: Integer
+
+**Default**: `5`
+
+**Example**:
+```bash
+SYNAPSE_HARDENING_PLANNING_MAX_REFINEMENTS=5
+```
+
+---
+
+### SYNAPSE_HARDENING_TOKEN_DEFAULT_BUDGET
+
+**Description**: Default token budget per policy scope window when no phase-specific budget applies
+
+**Type**: Integer
+
+**Default**: `12000`
+
+**Example**:
+```bash
+SYNAPSE_HARDENING_TOKEN_DEFAULT_BUDGET=12000
+```
+
+---
+
+### SYNAPSE_HARDENING_TOKEN_SCOPE_WINDOW_MINUTES
+
+**Description**: Sliding window length (minutes) for token-budget accounting
+
+**Type**: Integer
+
+**Default**: `60`
+
+**Example**:
+```bash
+SYNAPSE_HARDENING_TOKEN_SCOPE_WINDOW_MINUTES=60
+```
+
+---
+
+### SYNAPSE_HARDENING_TOKEN_CONCISE_THRESHOLD_RATIO
+
+**Description**: Budget ratio where responses switch to concise-mode warnings before hard block
+
+**Type**: Decimal
+
+**Default**: `0.75`
+
+**Example**:
+```bash
+SYNAPSE_HARDENING_TOKEN_CONCISE_THRESHOLD_RATIO=0.75
+```
+
+---
+
+### SYNAPSE_HARDENING_TOKEN_PLANNING_BUDGET
+
+**Description**: Token budget for planning-phase operations per scope window
+
+**Type**: Integer
+
+**Default**: `4000`
+
+**Example**:
+```bash
+SYNAPSE_HARDENING_TOKEN_PLANNING_BUDGET=4000
+```
+
+---
+
+### SYNAPSE_HARDENING_TOKEN_COLLABORATION_BUDGET
+
+**Description**: Token budget for collaboration-phase operations per scope window
+
+**Type**: Integer
+
+**Default**: `4000`
+
+**Example**:
+```bash
+SYNAPSE_HARDENING_TOKEN_COLLABORATION_BUDGET=4000
+```
+
+---
+
+### SYNAPSE_HARDENING_TOKEN_TOOLING_BUDGET
+
+**Description**: Token budget for tooling-phase operations per scope window
+
+**Type**: Integer
+
+**Default**: `4000`
+
+**Example**:
+```bash
+SYNAPSE_HARDENING_TOKEN_TOOLING_BUDGET=4000
+```
+
+---
+
 ## Model Provider Configuration
 
 ### OPENAI_API_KEY
