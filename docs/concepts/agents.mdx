@@ -44,6 +44,19 @@ Multiple agents collaborating on complex tasks.
 - **Plugins**: Available tools and capabilities
 - **Team Role**: Position in agent teams
 
+### Native Java Tools (v2.3.6-dev)
+
+Agents can execute built-in native Java tools via the runtime tool framework:
+
+- tools are registered/discovered at runtime
+- execution happens in JVM with timeout guardrails
+- deterministic tool results can be cached
+
+Initial built-ins:
+
+- `tool_registry_inspect` (tool discovery metadata)
+- `plugin_contract_validate` (plugin manifest contract validation)
+
 ## Memory and Context
 
 Agents maintain:

@@ -310,6 +310,47 @@ Body:
 
 Return the next non-`DONE` step from the active plan version.
 
+## Native Tool Endpoints
+
+Base path: `/api/tools`
+
+### `GET /`
+
+List registered native Java tools.
+
+### `GET /{toolId}`
+
+Get one native tool definition (schema + cache metadata).
+
+### `POST /{toolId}/execute`
+
+Execute a native Java tool in JVM runtime.
+
+Body:
+
+```json
+{
+  "agentId": "main-agent",
+  "teamId": "ops-team",
+  "collaborationSessionId": "7ad8c0bd-7166-418e-bf4b-8fb4f37f5fef",
+  "goalId": "7f20a93d-f9e0-48e0-a4e9-6e224f13065a",
+  "input": {
+    "manifest": {
+      "id": "my-plugin",
+      "name": "My Plugin",
+      "type": "SKILL",
+      "version": "1.0.0",
+      "author": "dev"
+    }
+  }
+}
+```
+
+Current built-ins:
+
+- `tool_registry_inspect`
+- `plugin_contract_validate`
+
 ## Notes
 
 - Health endpoints are designed for load balancers, orchestrators, and monitoring systems.

@@ -682,6 +682,66 @@ SYNAPSE_MEMORY_BIMONTHLY_ARCHIVE_CRON="0 0 3 1 */2 *"
 
 ---
 
+### SYNAPSE_TOOLS_ENABLED
+
+**Description**: Enable native Java tool framework endpoints and runtime execution
+
+**Type**: Boolean
+
+**Default**: `true`
+
+**Example**:
+```bash
+SYNAPSE_TOOLS_ENABLED=true
+```
+
+---
+
+### SYNAPSE_TOOLS_EXECUTION_TIMEOUT_MS
+
+**Description**: Max tool execution time before timeout error
+
+**Type**: Integer (milliseconds)
+
+**Default**: `10000`
+
+**Example**:
+```bash
+SYNAPSE_TOOLS_EXECUTION_TIMEOUT_MS=10000
+```
+
+---
+
+### SYNAPSE_TOOLS_CACHE_ENABLED
+
+**Description**: Enable deterministic native tool result caching
+
+**Type**: Boolean
+
+**Default**: `true`
+
+**Example**:
+```bash
+SYNAPSE_TOOLS_CACHE_ENABLED=true
+```
+
+---
+
+### SYNAPSE_TOOLS_CACHE_DEFAULT_TTL_SECONDS
+
+**Description**: Default cache TTL (seconds) for cacheable native tools without explicit tool TTL override
+
+**Type**: Integer
+
+**Default**: `300`
+
+**Example**:
+```bash
+SYNAPSE_TOOLS_CACHE_DEFAULT_TTL_SECONDS=300
+```
+
+---
+
 ## Model Provider Configuration
 
 ### OPENAI_API_KEY
