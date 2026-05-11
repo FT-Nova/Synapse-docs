@@ -1,0 +1,22 @@
+---
+title: Plugin API Reference
+---
+
+import Head from '@docusaurus/Head';
+import SwaggerReadonly from '@site/src/components/SwaggerReadonly';
+
+# Plugin API Reference
+
+This page renders the plugin OpenAPI contract in a read-only Swagger reference view.
+
+Open raw spec: <a href="/openapi/plugin-api.yaml">/openapi/plugin-api.yaml</a>
+
+<Head>
+  <link rel="stylesheet" href="/swagger/swagger-ui.css" />
+  <script src="/swagger/swagger-ui-bundle.js"></script>
+  <script src="/swagger/swagger-ui-standalone-preset.js"></script>
+</Head>
+
+<div className="api-reference-page">
+  <SwaggerReadonly specPath="/openapi/plugin-api.yaml" />
+</div>

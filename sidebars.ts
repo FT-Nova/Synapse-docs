@@ -65,6 +65,13 @@ const sidebars: SidebarsConfig = {
     },
     {
       type: 'category',
+      label: 'Plugin API Reference',
+      items: [
+        'plugins/plugin-api-reference',
+      ],
+    },
+    {
+      type: 'category',
       label: 'Official Plugins',
       collapsed: true,
       items: [
