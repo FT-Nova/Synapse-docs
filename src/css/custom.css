@@ -27,3 +27,16 @@
   --ifm-color-primary-lightest: #4fddbf;
   --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.3);
 }
+
+.api-reference-page .container {
+  max-width: 100% !important;
+}
+
+.api-reference-page .swagger-readonly {
+  width: 100%;
+}
+
+.api-reference-page .swagger-readonly .swagger-ui .topbar,
+.api-reference-page .swagger-readonly .swagger-ui .scheme-container {
+  display: none;
+}
