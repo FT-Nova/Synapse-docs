@@ -1,0 +1,606 @@
+openapi: 3.0.3
+info:
+  title: SYNAPSE REST API
+  version: v2.4.0
+  description: OpenAPI reference derived from the current SYNAPSE REST API documentation.
+servers:
+  - url: /
+tags:
+  - name: Health
+  - name: Actuator
+  - name: Memory
+  - name: Collaboration
+  - name: Planning
+  - name: Tools
+paths:
+  /api/health:
+    get:
+      tags: [Health]
+      summary: High-level platform health
+      operationId: getPlatformHealth
+      responses:
+        '200':
+          description: Platform health status
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthStatus'
+  /api/health/liveness:
+    get:
+      tags: [Health]
+      summary: Liveness probe
+      operationId: getLiveness
+      responses:
+        '200':
+          description: Application liveness
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProbeStatus'
+  /api/health/readiness:
+    get:
+      tags: [Health]
+      summary: Readiness probe
+      operationId: getReadiness
+      responses:
+        '200':
+          description: Dependency readiness status
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProbeStatus'
+  /actuator/health:
+    get:
+      tags: [Actuator]
+      summary: Spring actuator health
+      operationId: getActuatorHealth
+      responses:
+        '200':
+          description: Actuator health payload
+  /actuator/prometheus:
+    get:
+      tags: [Actuator]
+      summary: Prometheus metrics scrape
+      operationId: getPrometheusMetrics
+      responses:
+        '200':
+          description: Prometheus metrics
+          content:
+            text/plain:
+              schema:
+                type: string
+  /api/agents/{agentId}/memory:
+    get:
+      tags: [Memory]
+      summary: List memory entries for an agent
+      operationId: listAgentMemory
+      parameters:
+        - $ref: '#/components/parameters/agentId'
+        - in: query
+          name: namespace
+          schema:
+            type: string
+        - in: query
+          name: tier
+          schema:
+            type: string
+            enum: [SHORT_TERM, KNOWLEDGE, ARCHIVE]
+      responses:
+        '200':
+          description: Memory entries
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/MemoryEntry'
+  /api/agents/{agentId}/memory/{key}:
+    get:
+      tags: [Memory]
+      summary: Get one memory entry
+      operationId: getAgentMemoryEntry
+      parameters:
+        - $ref: '#/components/parameters/agentId'
+        - $ref: '#/components/parameters/key'
+      responses:
+        '200':
+          description: Memory entry
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MemoryEntry'
+    put:
+      tags: [Memory]
+      summary: Upsert a memory entry
+      operationId: upsertAgentMemoryEntry
+      parameters:
+        - $ref: '#/components/parameters/agentId'
+        - $ref: '#/components/parameters/key'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MemoryEntryUpsertRequest'
+      responses:
+        '200':
+          description: Memory entry updated
+    delete:
+      tags: [Memory]
+      summary: Delete a memory entry
+      operationId: deleteAgentMemoryEntry
+      parameters:
+        - $ref: '#/components/parameters/agentId'
+        - $ref: '#/components/parameters/key'
+      responses:
+        '204':
+          description: Memory entry deleted
+  /api/agents/{agentId}/memory/{key}/promote:
+    post:
+      tags: [Memory]
+      summary: Promote memory entry to a new tier
+      operationId: promoteAgentMemoryEntry
+      parameters:
+        - $ref: '#/components/parameters/agentId'
+        - $ref: '#/components/parameters/key'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MemoryPromotionRequest'
+      responses:
+        '200':
+          description: Memory entry promoted
+  /api/teams/{teamId}/collaboration/sessions:
+    get:
+      tags: [Collaboration]
+      summary: List collaboration sessions
+      operationId: listCollaborationSessions
+      parameters:
+        - $ref: '#/components/parameters/teamId'
+      responses:
+        '200':
+          description: Collaboration sessions
+    post:
+      tags: [Collaboration]
+      summary: Create collaboration session
+      operationId: createCollaborationSession
+      parameters:
+        - $ref: '#/components/parameters/teamId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateSessionRequest'
+      responses:
+        '201':
+          description: Session created
+  /api/teams/{teamId}/collaboration/sessions/{sessionId}:
+    get:
+      tags: [Collaboration]
+      summary: Get collaboration session
+      operationId: getCollaborationSession
+      parameters:
+        - $ref: '#/components/parameters/teamId'
+        - $ref: '#/components/parameters/sessionId'
+      responses:
+        '200':
+          description: Session details
+  /api/teams/{teamId}/collaboration/sessions/{sessionId}/messages:
+    get:
+      tags: [Collaboration]
+      summary: List collaboration messages
+      operationId: listCollaborationMessages
+      parameters:
+        - $ref: '#/components/parameters/teamId'
+        - $ref: '#/components/parameters/sessionId'
+      responses:
+        '200':
+          description: Messages in chronological order
+    post:
+      tags: [Collaboration]
+      summary: Send collaboration message
+      operationId: sendCollaborationMessage
+      parameters:
+        - $ref: '#/components/parameters/teamId'
+        - $ref: '#/components/parameters/sessionId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CollaborationMessageRequest'
+      responses:
+        '201':
+          description: Message stored
+  /api/teams/{teamId}/collaboration/sessions/{sessionId}/delegations:
+    get:
+      tags: [Collaboration]
+      summary: List delegation records
+      operationId: listCollaborationDelegations
+      parameters:
+        - $ref: '#/components/parameters/teamId'
+        - $ref: '#/components/parameters/sessionId'
+      responses:
+        '200':
+          description: Delegation records
+    post:
+      tags: [Collaboration]
+      summary: Create delegation
+      operationId: createCollaborationDelegation
+      parameters:
+        - $ref: '#/components/parameters/teamId'
+        - $ref: '#/components/parameters/sessionId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DelegationRequest'
+      responses:
+        '201':
+          description: Delegation created
+  /api/teams/{teamId}/collaboration/sessions/{sessionId}/context:
+    get:
+      tags: [Collaboration]
+      summary: List session context entries
+      operationId: listCollaborationContext
+      parameters:
+        - $ref: '#/components/parameters/teamId'
+        - $ref: '#/components/parameters/sessionId'
+      responses:
+        '200':
+          description: Context entries
+  /api/teams/{teamId}/collaboration/sessions/{sessionId}/context/{contextKey}:
+    put:
+      tags: [Collaboration]
+      summary: Upsert session context key
+      operationId: upsertCollaborationContext
+      parameters:
+        - $ref: '#/components/parameters/teamId'
+        - $ref: '#/components/parameters/sessionId'
+        - $ref: '#/components/parameters/contextKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ContextUpdateRequest'
+      responses:
+        '200':
+          description: Context updated
+  /api/teams/{teamId}/planning/goals:
+    get:
+      tags: [Planning]
+      summary: List team planning goals
+      operationId: listPlanningGoals
+      parameters:
+        - $ref: '#/components/parameters/teamId'
+      responses:
+        '200':
+          description: Planning goals
+    post:
+      tags: [Planning]
+      summary: Create planning goal
+      operationId: createPlanningGoal
+      parameters:
+        - $ref: '#/components/parameters/teamId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateGoalRequest'
+      responses:
+        '201':
+          description: Goal created
+  /api/teams/{teamId}/planning/goals/{goalId}:
+    get:
+      tags: [Planning]
+      summary: Get planning goal
+      operationId: getPlanningGoal
+      parameters:
+        - $ref: '#/components/parameters/teamId'
+        - $ref: '#/components/parameters/goalId'
+      responses:
+        '200':
+          description: Goal details
+  /api/teams/{teamId}/planning/goals/{goalId}/plans:
+    get:
+      tags: [Planning]
+      summary: List plan versions for goal
+      operationId: listGoalPlans
+      parameters:
+        - $ref: '#/components/parameters/teamId'
+        - $ref: '#/components/parameters/goalId'
+      responses:
+        '200':
+          description: Goal plans
+    post:
+      tags: [Planning]
+      summary: Create initial plan
+      operationId: createGoalPlan
+      parameters:
+        - $ref: '#/components/parameters/teamId'
+        - $ref: '#/components/parameters/goalId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PlanRequest'
+      responses:
+        '201':
+          description: Plan created
+  /api/teams/{teamId}/planning/goals/{goalId}/plans/refine:
+    post:
+      tags: [Planning]
+      summary: Refine an existing plan
+      operationId: refineGoalPlan
+      parameters:
+        - $ref: '#/components/parameters/teamId'
+        - $ref: '#/components/parameters/goalId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: '#/components/schemas/PlanRequest'
+                - type: object
+                  required: [basePlanId]
+                  properties:
+                    basePlanId:
+                      type: string
+      responses:
+        '201':
+          description: Refined plan created
+  /api/teams/{teamId}/planning/goals/{goalId}/next-step:
+    get:
+      tags: [Planning]
+      summary: Get next non-complete step
+      operationId: getGoalNextStep
+      parameters:
+        - $ref: '#/components/parameters/teamId'
+        - $ref: '#/components/parameters/goalId'
+      responses:
+        '200':
+          description: Next actionable step
+  /api/tools:
+    get:
+      tags: [Tools]
+      summary: List registered native tools
+      operationId: listNativeTools
+      responses:
+        '200':
+          description: Native tool definitions
+  /api/tools/{toolId}:
+    get:
+      tags: [Tools]
+      summary: Get native tool definition
+      operationId: getNativeTool
+      parameters:
+        - $ref: '#/components/parameters/toolId'
+      responses:
+        '200':
+          description: Tool metadata and schema
+  /api/tools/{toolId}/execute:
+    post:
+      tags: [Tools]
+      summary: Execute native tool
+      operationId: executeNativeTool
+      parameters:
+        - $ref: '#/components/parameters/toolId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ToolExecutionRequest'
+      responses:
+        '200':
+          description: Tool execution response
+components:
+  parameters:
+    agentId:
+      name: agentId
+      in: path
+      required: true
+      schema:
+        type: string
+    key:
+      name: key
+      in: path
+      required: true
+      schema:
+        type: string
+    teamId:
+      name: teamId
+      in: path
+      required: true
+      schema:
+        type: string
+    sessionId:
+      name: sessionId
+      in: path
+      required: true
+      schema:
+        type: string
+    contextKey:
+      name: contextKey
+      in: path
+      required: true
+      schema:
+        type: string
+    goalId:
+      name: goalId
+      in: path
+      required: true
+      schema:
+        type: string
+    toolId:
+      name: toolId
+      in: path
+      required: true
+      schema:
+        type: string
+  schemas:
+    HealthStatus:
+      type: object
+      properties:
+        systemName:
+          type: string
+        version:
+          type: string
+        status:
+          type: string
+        timestamp:
+          type: string
+          format: date-time
+    ProbeStatus:
+      type: object
+      properties:
+        status:
+          type: string
+        checks:
+          type: object
+          additionalProperties:
+            type: string
+        timestamp:
+          type: string
+          format: date-time
+    MemoryEntry:
+      type: object
+      properties:
+        key:
+          type: string
+        value:
+          type: string
+        namespace:
+          type: string
+        tier:
+          type: string
+    MemoryEntryUpsertRequest:
+      type: object
+      required: [value]
+      properties:
+        key:
+          type: string
+        value:
+          type: string
+        namespace:
+          type: string
+    MemoryPromotionRequest:
+      type: object
+      required: [targetTier, reason]
+      properties:
+        targetTier:
+          type: string
+          enum: [KNOWLEDGE, ARCHIVE]
+        reason:
+          type: string
+    CreateSessionRequest:
+      type: object
+      required: [initiatedByAgentId]
+      properties:
+        initiatedByAgentId:
+          type: string
+        conversationId:
+          type: string
+    CollaborationMessageRequest:
+      type: object
+      required: [fromAgentId, toAgentId, messageType, content]
+      properties:
+        fromAgentId:
+          type: string
+        toAgentId:
+          type: string
+        messageType:
+          type: string
+          enum: [DIRECTIVE, CONTEXT, STATUS, RESULT]
+        content:
+          type: string
+        metadata:
+          type: object
+          additionalProperties: true
+    DelegationRequest:
+      type: object
+      required: [taskId, fromAgentId, toAgentId]
+      properties:
+        taskId:
+          type: string
+        fromAgentId:
+          type: string
+        toAgentId:
+          type: string
+        delegationNote:
+          type: string
+    ContextUpdateRequest:
+      type: object
+      required: [value, updatedByAgentId]
+      properties:
+        value:
+          type: string
+        updatedByAgentId:
+          type: string
+    CreateGoalRequest:
+      type: object
+      required: [title, goalStatement, createdByAgentId]
+      properties:
+        collaborationSessionId:
+          type: string
+        title:
+          type: string
+        goalStatement:
+          type: string
+        createdByAgentId:
+          type: string
+    PlanStep:
+      type: object
+      required: [id, title, status]
+      properties:
+        id:
+          type: string
+        title:
+          type: string
+        status:
+          type: string
+          enum: [PENDING, IN_PROGRESS, DONE]
+    ReasoningSummary:
+      type: object
+      properties:
+        summary:
+          type: string
+    PlanRequest:
+      type: object
+      required: [compactSummary, steps, createdByAgentId]
+      properties:
+        compactSummary:
+          type: string
+        steps:
+          type: array
+          items:
+            $ref: '#/components/schemas/PlanStep'
+        reasoningChain:
+          type: array
+          items:
+            $ref: '#/components/schemas/ReasoningSummary'
+        createdByAgentId:
+          type: string
+    ToolExecutionRequest:
+      type: object
+      required: [agentId, input]
+      properties:
+        agentId:
+          type: string
+        teamId:
+          type: string
+        collaborationSessionId:
+          type: string
+        goalId:
+          type: string
+        input:
+          type: object
+          additionalProperties: true

@@ -1,0 +1,1 @@
+{"parameters":[{"name":"agentId","in":"path","required":true,"schema":{"type":"string"}},{"in":"query","name":"namespace","schema":{"type":"string"}},{"in":"query","name":"tier","schema":{"type":"string","enum":["SHORT_TERM","KNOWLEDGE","ARCHIVE"]}}]}

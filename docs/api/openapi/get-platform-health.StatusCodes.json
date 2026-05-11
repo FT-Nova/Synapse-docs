@@ -1,0 +1,1 @@
+{"responses":{"200":{"description":"Platform health status","content":{"application/json":{"schema":{"type":"object","properties":{"systemName":{"type":"string"},"version":{"type":"string"},"status":{"type":"string"},"timestamp":{"type":"string","format":"date-time"}},"title":"HealthStatus"}}}}}}

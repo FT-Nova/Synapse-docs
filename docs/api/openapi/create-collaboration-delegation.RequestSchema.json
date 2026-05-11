@@ -1,0 +1,1 @@
+{"title":"Body","body":{"required":true,"content":{"application/json":{"schema":{"type":"object","required":["taskId","fromAgentId","toAgentId"],"properties":{"taskId":{"type":"string"},"fromAgentId":{"type":"string"},"toAgentId":{"type":"string"},"delegationNote":{"type":"string"}},"title":"DelegationRequest"}}}}}

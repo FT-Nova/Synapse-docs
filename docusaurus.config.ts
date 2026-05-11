@@ -18,7 +18,7 @@ const config: Config = {
   markdown: {
     mermaid: true,
   },
-  themes: ['@docusaurus/theme-mermaid'],
+  themes: ['@docusaurus/theme-mermaid', 'docusaurus-theme-openapi-docs'],
 
   // Set the production url of your site here
   url: 'https://ftmahringer.github.io',
@@ -47,6 +47,7 @@ const config: Config = {
       {
         docs: {
           sidebarPath: './sidebars.ts',
+          docItemComponent: '@theme/ApiItem',
           editUrl: 'https://github.com/FTMahringer/Synapse-docs/tree/main/',
           showLastUpdateTime: true,
           showLastUpdateAuthor: true,
@@ -56,6 +57,25 @@ const config: Config = {
           customCss: './src/css/custom.css',
         },
       } satisfies Preset.Options,
+    ],
+  ],
+  plugins: [
+    [
+      'docusaurus-plugin-openapi-docs',
+      {
+        id: 'openapi',
+        docsPluginId: 'classic',
+        config: {
+          synapse: {
+            specPath: 'openapi/synapse-rest-api.yaml',
+            outputDir: 'docs/api/openapi',
+            sidebarOptions: {
+              groupPathsBy: 'tag',
+              categoryLinkSource: 'tag',
+            },
+          },
+        },
+      },
     ],
   ],
 

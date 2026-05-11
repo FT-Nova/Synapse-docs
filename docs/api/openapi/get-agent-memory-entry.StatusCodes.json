@@ -1,0 +1,1 @@
+{"responses":{"200":{"description":"Memory entry","content":{"application/json":{"schema":{"type":"object","properties":{"key":{"type":"string"},"value":{"type":"string"},"namespace":{"type":"string"},"tier":{"type":"string"}},"title":"MemoryEntry"}}}}}}

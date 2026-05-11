@@ -1,0 +1,1 @@
+{"title":"Body","body":{"required":true,"content":{"application/json":{"schema":{"type":"object","required":["targetTier","reason"],"properties":{"targetTier":{"type":"string","enum":["KNOWLEDGE","ARCHIVE"]},"reason":{"type":"string"}},"title":"MemoryPromotionRequest"}}}}}

@@ -1,0 +1,1 @@
+{"title":"Body","body":{"required":true,"content":{"application/json":{"schema":{"type":"object","required":["title","goalStatement","createdByAgentId"],"properties":{"collaborationSessionId":{"type":"string"},"title":{"type":"string"},"goalStatement":{"type":"string"},"createdByAgentId":{"type":"string"}},"title":"CreateGoalRequest"}}}}}
