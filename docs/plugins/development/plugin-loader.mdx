@@ -16,6 +16,12 @@ graph TB
         ST[staging/] --> |runtime| L
     end
 
+    subgraph "Sandbox Layer"
+        SB[PluginSandboxService] --> |scan| BS[BytecodeScanner]
+        SB --> |validate| JPMS[JPMS Isolation]
+        SB --> |enforce| RL[Resource Limits]
+    end
+
     subgraph "Loader Layer"
         L --> |creates| CL[URLClassLoader]
         L --> |creates| ML[ModuleLayer]
@@ -292,6 +298,64 @@ If the JVM crashes while plugins are in `staging/`, the next startup will:
 4. Continue loading only `system/` JARs
 
 Admins can review orphans via the API and manually promote them.
+
+## Sandboxing
+
+Plugins are sandboxed at multiple layers:
+
+### Bytecode Scanning
+
+Before any plugin is loaded, its JAR is scanned with ASM for forbidden references:
+
+| Forbidden Package | Reason |
+|---|---|
+| `sun.*`, `com.sun.*` | Internal JDK APIs |
+| `org.springframework.*` | Core framework internals |
+| `org.hibernate.*`, `jakarta.persistence.*` | Database access |
+| `org.postgresql.*` | Database driver internals |
+| `io.lettuce.*`, `redis.clients.*` | Redis internals |
+| `dev.synapse.core.*`, `dev.synapse.agents.*`, etc. | Core SYNAPSE services |
+
+Allowed packages: `dev.synapse.plugin.api.*`, `java.*`, `javax.*`, `jdk.*`, `org.slf4j.*`
+
+Scan a JAR before install:
+```http
+POST /api/plugins/sandbox/scan
+Content-Type: application/json
+
+{ "jarPath": "/path/to/plugin.jar" }
+```
+
+Response:
+```json
+{
+  "clean": false,
+  "violations": [
+    { "classFile": "com/evil/Stealer.class", "reference": "org.springframework.jdbc.core.JdbcTemplate", "type": "CLASS_REFERENCE" }
+  ]
+}
+```
+
+### JPMS Isolation
+
+At load time, the plugin's `ModuleLayer` is validated to ensure it cannot resolve core modules. If isolation is breached, the load is aborted.
+
+### Resource Limits
+
+Limits are enforced per trust tier:
+
+| Limit | Official | Community |
+|---|---|---|
+| Lifecycle hook timeout | 30s | 10s |
+| Message handler timeout | 60s | 30s |
+| Max logs per minute | 1000 | 300 |
+
+If `onLoad()` times out, the plugin is marked `ERROR` and disabled.
+
+Get limits for a plugin:
+```http
+GET /api/plugins/{id}/sandbox/limits
+```
 
 ## Error Handling
 
