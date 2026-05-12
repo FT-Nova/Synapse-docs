@@ -147,6 +147,62 @@ POST /api/plugins/loader/promote
 
 Manually promotes all staging JARs to system/.
 
+### Resolve Dependencies
+
+```http
+POST /api/plugins/{id}/resolve-deps
+```
+
+Resolves the dependency chain for a plugin, returning:
+- `success` — whether resolution passed
+- `items` — per-dependency status (`SATISFIED`, `MISSING`, `UPDATE_PROMPT`, `BLOCK`, `SKIP_SOFT`)
+- `installOrder` — topological order for installation
+- `hasUpdatePrompts` — whether any dependency needs updating
+
+Example response:
+```json
+{
+  "pluginId": "my-bundle",
+  "success": true,
+  "items": [
+    { "dependencyId": "telegram-channel", "versionSpec": ">=1.0.0", "action": "SATISFIED", "installedVersion": "1.2.0" },
+    { "dependencyId": "openai-provider", "versionSpec": "^2.0.0", "action": "UPDATE_PROMPT", "installedVersion": "1.9.0" }
+  ],
+  "installOrder": ["telegram-channel", "openai-provider"],
+  "hasUpdatePrompts": true
+}
+```
+
+### Update Plugin
+
+```http
+POST /api/plugins/{id}/update
+Content-Type: application/json
+
+{ "jarPath": "/path/to/new-version.jar" }
+```
+
+Updates a plugin to a new JAR version. The flow:
+1. Unload current plugin (if loaded)
+2. Delete old JAR
+3. Stage new JAR
+4. Load new plugin
+5. Register in appropriate registry
+6. Promote to system/
+
+### Check Slot Clash
+
+```http
+POST /api/plugins/check-slot-clash
+Content-Type: application/json
+
+{ "id": "my-channel", "slots": { "channel_id": "telegram" } }
+```
+
+Checks if a manifest would conflict with already-claimed channel or provider slots.
+
+Returns `hasClash: true` if the slot is already taken by another plugin.
+
 ## PluginContext
 
 The `PluginContext` is the only bridge between a plugin and SYNAPSE core:
@@ -169,6 +225,62 @@ Resource limits are enforced per trust tier:
 | Concurrent virtual threads | 25 | 10 |
 | Lifecycle hook timeout | 30s | 10s |
 | Message handler timeout | 60s | 30s |
+
+## Dependency Resolution
+
+Plugins declare dependencies in their manifest:
+
+```yaml
+requires:
+  plugins:
+    - id: telegram-channel
+      version: ">=1.0.0"
+    - id: openai-provider
+      version: "^2.0.0"
+  soft_requires:
+    - id: image-generation-skill
+      version: ">=0.5.0"
+```
+
+### Hard Dependencies
+
+Hard dependencies **must** be satisfied before install:
+- If missing → install blocked
+- If version mismatch → update prompt or block
+- Transitive deps are resolved recursively
+
+### Soft Dependencies
+
+Soft dependencies are optional:
+- Plugin loads even if the dependency is missing
+- A notification is sent via `PluginEventBus` when the dependency appears later
+
+### Version Constraints
+
+Supported operators:
+
+| Operator | Meaning | Example |
+|---|---|---|
+| `*` | Any version | `*` |
+| `1.0.0` | Exact match | `1.0.0` |
+| `>=1.0.0` | Greater than or equal | `>=1.0.0` |
+| `>1.0.0` | Greater than | `>1.0.0` |
+| `<=1.0.0` | Less than or equal | `<=1.0.0` |
+| `<1.0.0` | Less than | `<1.0.0` |
+| `^1.0.0` | Compatible (same major) | `^1.0.0` matches `1.2.0` |
+| `~1.0.0` | Approximately (same major.minor) | `~1.0.0` matches `1.0.5` |
+
+### Conflict Resolution
+
+| Scenario | Action |
+|---|---|
+| Installed version satisfies constraint | Proceed (`SATISFIED`) |
+| Installed version is older than required | Show update prompt (`UPDATE_PROMPT`) |
+| Installed version is newer than required | Hard block — downgrade not supported (`BLOCK`) |
+| Dependency missing (hard) | Block install (`MISSING`) |
+| Dependency missing (soft) | Skip, notify later (`SKIP_SOFT`) |
+| Circular dependency detected | Block with full cycle path (`CYCLE_DETECTED`) |
+| Slot already claimed by another plugin | Hard block (`SLOT_CLASH`) |
 
 ## Crash Recovery
 
