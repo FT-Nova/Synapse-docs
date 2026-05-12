@@ -110,6 +110,7 @@ const sidebars: SidebarsConfig = {
       items: [
         "plugins/development/getting-started",
         "plugins/development/plugin-tutorial",
+        "plugins/development/plugin-loader",
         "plugins/development/bundle-tutorial",
         "plugins/development/testing",
         "plugins/development/publishing",

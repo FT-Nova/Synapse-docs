@@ -1,0 +1,421 @@
+openapi: 3.0.3
+info:
+  title: SYNAPSE Core REST API
+  version: v2.4.0
+  description: Core platform operational API contracts for health, memory, collaboration, planning, and tools.
+servers:
+  - url: /
+tags:
+  - name: Health
+  - name: Memory
+  - name: Collaboration
+  - name: Planning
+  - name: Tools
+paths:
+  /api/health:
+    get:
+      tags: [Health]
+      summary: High-level platform health
+      operationId: getPlatformHealth
+      responses:
+        '200':
+          description: Platform health status
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthStatus'
+              examples:
+                healthy:
+                  value:
+                    systemName: SYNAPSE
+                    version: v2.4.0
+                    status: UP
+                    timestamp: '2026-05-11T19:00:00Z'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+  /api/health/readiness:
+    get:
+      tags: [Health]
+      summary: Readiness probe
+      operationId: getReadiness
+      responses:
+        '200':
+          description: Dependency readiness status
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProbeStatus'
+              examples:
+                ready:
+                  value:
+                    status: UP
+                    checks:
+                      postgres: UP
+                      redis: UP
+                      qdrant: UP
+                    timestamp: '2026-05-11T19:00:01Z'
+                degraded:
+                  value:
+                    status: DEGRADED
+                    checks:
+                      postgres: UP
+                      redis: DOWN
+                      qdrant: UP
+                    timestamp: '2026-05-11T19:00:01Z'
+  /api/agents/{agentId}/memory:
+    get:
+      tags: [Memory]
+      summary: List memory entries for an agent
+      operationId: listAgentMemory
+      parameters:
+        - $ref: '#/components/parameters/agentId'
+        - in: query
+          name: namespace
+          schema:
+            type: string
+        - in: query
+          name: tier
+          schema:
+            type: string
+            enum: [SHORT_TERM, KNOWLEDGE, ARCHIVE]
+      responses:
+        '200':
+          description: Memory entries
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/MemoryEntry'
+              examples:
+                success:
+                  value:
+                    - key: working-context
+                      value: Need plugin API split and examples
+                      namespace: planning
+                      tier: SHORT_TERM
+                    - key: architecture-note
+                      value: SwaggerReadonly in use
+                      namespace: docs
+                      tier: KNOWLEDGE
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /api/agents/{agentId}/memory/{key}:
+    put:
+      tags: [Memory]
+      summary: Upsert a memory entry
+      operationId: upsertAgentMemoryEntry
+      parameters:
+        - $ref: '#/components/parameters/agentId'
+        - $ref: '#/components/parameters/key'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MemoryEntryUpsertRequest'
+            examples:
+              writeEntry:
+                value:
+                  value: Keep backward compatibility with legacy spec path
+                  namespace: docs
+      responses:
+        '200':
+          description: Memory entry updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MemoryEntry'
+              examples:
+                updated:
+                  value:
+                    key: compatibility-note
+                    value: Keep backward compatibility with legacy spec path
+                    namespace: docs
+                    tier: SHORT_TERM
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+  /api/teams/{teamId}/collaboration/sessions:
+    post:
+      tags: [Collaboration]
+      summary: Create collaboration session
+      operationId: createCollaborationSession
+      parameters:
+        - $ref: '#/components/parameters/teamId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateSessionRequest'
+            examples:
+              createSession:
+                value:
+                  initiatedByAgentId: agent-docs-01
+                  conversationId: docs-refresh-2026-05
+      responses:
+        '201':
+          description: Session created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CollaborationSession'
+              examples:
+                created:
+                  value:
+                    id: 7ad8c0bd-7166-418e-bf4b-8fb4f37f5fef
+                    teamId: team-docs
+                    status: ACTIVE
+                    initiatedByAgentId: agent-docs-01
+                    createdAt: '2026-05-11T19:00:00Z'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+  /api/teams/{teamId}/planning/goals:
+    post:
+      tags: [Planning]
+      summary: Create planning goal
+      operationId: createPlanningGoal
+      parameters:
+        - $ref: '#/components/parameters/teamId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateGoalRequest'
+            examples:
+              goal:
+                value:
+                  collaborationSessionId: 7ad8c0bd-7166-418e-bf4b-8fb4f37f5fef
+                  title: Split OpenAPI docs
+                  goalStatement: Separate core and plugin API references and keep compatibility
+                  createdByAgentId: agent-docs-01
+      responses:
+        '201':
+          description: Goal created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PlanningGoal'
+              examples:
+                created:
+                  value:
+                    id: goal-9f8a
+                    title: Split OpenAPI docs
+                    status: ACTIVE
+                    createdAt: '2026-05-11T19:00:00Z'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+  /api/tools/{toolId}/execute:
+    post:
+      tags: [Tools]
+      summary: Execute native tool
+      operationId: executeNativeTool
+      parameters:
+        - $ref: '#/components/parameters/toolId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ToolExecutionRequest'
+            examples:
+              runSearch:
+                value:
+                  agentId: agent-docs-01
+                  teamId: team-docs
+                  input:
+                    query: SwaggerReadonly component
+      responses:
+        '200':
+          description: Tool execution response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ToolExecutionResponse'
+              examples:
+                success:
+                  value:
+                    toolId: rg
+                    status: SUCCEEDED
+                    output:
+                      matches: 3
+                      files:
+                        - docs/api/rest-api.mdx
+                        - src/components/SwaggerReadonly.tsx
+                error:
+                  value:
+                    toolId: rg
+                    status: FAILED
+                    error:
+                      code: TOOL_EXECUTION_FAILED
+                      message: Invalid regex pattern
+                      timestamp: '2026-05-11T19:01:00Z'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+components:
+  parameters:
+    agentId:
+      name: agentId
+      in: path
+      required: true
+      schema: {type: string}
+    key:
+      name: key
+      in: path
+      required: true
+      schema: {type: string}
+    teamId:
+      name: teamId
+      in: path
+      required: true
+      schema: {type: string}
+    toolId:
+      name: toolId
+      in: path
+      required: true
+      schema: {type: string}
+  responses:
+    Unauthorized:
+      description: Missing or invalid authentication token.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          examples:
+            missingToken:
+              value:
+                code: AUTH_REQUIRED
+                message: Bearer token is required.
+                timestamp: '2026-05-11T19:01:00Z'
+    Forbidden:
+      description: Authenticated but not permitted.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          examples:
+            insufficientRole:
+              value:
+                code: ACCESS_DENIED
+                message: You do not have permission to modify this team.
+                timestamp: '2026-05-11T19:01:00Z'
+    ValidationError:
+      description: Validation failed for request payload.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          examples:
+            invalidPayload:
+              value:
+                code: VALIDATION_ERROR
+                message: Field `goalStatement` must not be blank.
+                timestamp: '2026-05-11T19:01:00Z'
+    TooManyRequests:
+      description: Request rate limit exceeded.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          examples:
+            throttled:
+              value:
+                code: RATE_LIMITED
+                message: Too many requests. Retry in 30 seconds.
+                timestamp: '2026-05-11T19:01:00Z'
+  schemas:
+    ErrorResponse:
+      type: object
+      required: [code, message, timestamp]
+      properties:
+        code: {type: string}
+        message: {type: string}
+        timestamp: {type: string, format: date-time}
+    HealthStatus:
+      type: object
+      properties:
+        systemName: {type: string}
+        version: {type: string}
+        status: {type: string}
+        timestamp: {type: string, format: date-time}
+    ProbeStatus:
+      type: object
+      properties:
+        status: {type: string}
+        checks:
+          type: object
+          additionalProperties: {type: string}
+        timestamp: {type: string, format: date-time}
+    MemoryEntry:
+      type: object
+      properties:
+        key: {type: string}
+        value: {type: string}
+        namespace: {type: string}
+        tier: {type: string}
+    MemoryEntryUpsertRequest:
+      type: object
+      required: [value]
+      properties:
+        key: {type: string}
+        value: {type: string}
+        namespace: {type: string}
+    CreateSessionRequest:
+      type: object
+      required: [initiatedByAgentId]
+      properties:
+        initiatedByAgentId: {type: string}
+        conversationId: {type: string}
+    CollaborationSession:
+      type: object
+      properties:
+        id: {type: string}
+        teamId: {type: string}
+        status: {type: string}
+        initiatedByAgentId: {type: string}
+        createdAt: {type: string, format: date-time}
+    CreateGoalRequest:
+      type: object
+      required: [title, goalStatement, createdByAgentId]
+      properties:
+        collaborationSessionId: {type: string}
+        title: {type: string}
+        goalStatement: {type: string}
+        createdByAgentId: {type: string}
+    PlanningGoal:
+      type: object
+      properties:
+        id: {type: string}
+        title: {type: string}
+        status: {type: string}
+        createdAt: {type: string, format: date-time}
+    ToolExecutionRequest:
+      type: object
+      required: [agentId, input]
+      properties:
+        agentId: {type: string}
+        teamId: {type: string}
+        collaborationSessionId: {type: string}
+        goalId: {type: string}
+        input:
+          type: object
+          additionalProperties: true
+    ToolExecutionResponse:
+      type: object
+      properties:
+        toolId: {type: string}
+        status: {type: string}
+        output:
+          type: object
+          additionalProperties: true
+        error:
+          $ref: '#/components/schemas/ErrorResponse'
